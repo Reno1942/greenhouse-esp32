@@ -23,6 +23,7 @@ enum RelayState : byte
 RelaysPins relaysPins;
 SensorsPins sensorsPins;
 LCDPins lcdPins;
+JoystickPins joystickPins;
 
 // objects structs
 LCDValues lcdValues;
@@ -35,16 +36,16 @@ Ultrasonic ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho);
 
 // function declarations
 void setupLCD();
+void setupJoystick();
 
 void setup() {
     Serial.begin(115200);  
 
     setupLCD();
-    
+    setupJoystick();
 }
 
-void loop() {
-
+void loop() {    
 }
 
 // function definitions
@@ -54,4 +55,11 @@ void setupLCD()
     lcd.begin(lcdValues.cols, lcdValues.rows);
     lcd.backlight();
     lcd.blink();    
+}
+
+void setupJoystick()
+{
+    pinMode(joystickPins.SW, INPUT);
+    pinMode(joystickPins.VRx, INPUT);
+    pinMode(joystickPins.VRy, INPUT);
 }

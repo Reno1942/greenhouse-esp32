@@ -13,8 +13,8 @@ struct RelaysPins
 
 struct JoystickPins
 {
-    const byte VRx = 21;
-    const byte VRy = 22;
+    const byte VRx = 4;
+    const byte VRy = 5;
     const byte SW = 23;
 };
 
