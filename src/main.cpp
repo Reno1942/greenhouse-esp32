@@ -1,3 +1,4 @@
+// libraries
 #include <Arduino.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
@@ -7,90 +8,50 @@
 #include <hd44780ioClass/hd44780_I2Cexp.h>
 #include <Ultrasonic.h>
 
-#define DHT_PIN 9
-#define DHT_TYPE 11
+// local includes
+#include "PinsDefinitions.h"
+#include "ObjectsDefinitions.h"
 
-DHT_Unified dht(DHT_PIN, DHT_TYPE);
-uint32_t dhtDelayMS;
+// enums
+enum RelayState : byte 
+{
+    RELAY_OFF = 1,
+    RELAY_ON = 0
+};
 
-hd44780_I2Cexp lcd(0x27);
-const int LCD_COLS = 20;
-const int LCD_ROWS = 4;
+// pin structs
+RelaysPins relaysPins;
+SensorsPins sensorsPins;
+LCDPins lcdPins;
 
-Ultrasonic hcsr04(19, 18);
-int distance;
+// objects structs
+LCDValues lcdValues;
+DHTValues dhtValues;
 
-const byte fanRelay = 2;
-const byte topLightRelay = 3;
-const byte bottomLightRelay = 10;
-const byte pumpRelay = 11;
+// objects creation
+DHT_Unified dht(sensorsPins.dht, dhtValues.dhtType);
+hd44780_I2Cexp lcd(lcdValues.address);
+Ultrasonic ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho);
 
-const byte wl = 20;
-
-// FUNCTION DECLARATIONS
-
+// function declarations
+void setupLCD();
 
 void setup() {
-  Serial.begin(115200);
+    Serial.begin(115200);  
 
-  //setup dht
-  dht.begin();
-  sensor_t sensor;
-  dht.temperature().getSensor(&sensor);
-  dhtDelayMS = sensor.min_delay / 1000;
-
-  //setup lcd
-  Wire.begin(6, 7);
-  lcd.begin(LCD_COLS, LCD_ROWS);
-  lcd.backlight();
-	lcd.print("Hello, World!");
-
-  //setup relays
-  pinMode(fanRelay, OUTPUT);
-  pinMode(pumpRelay, OUTPUT);
-  pinMode(topLightRelay, OUTPUT);
-  pinMode(bottomLightRelay, OUTPUT);
-
-  digitalWrite(fanRelay, LOW);
-  digitalWrite(pumpRelay, LOW);
-  digitalWrite(topLightRelay, LOW);
-  digitalWrite(bottomLightRelay, LOW);
-
-  //setup wl
-  pinMode(wl, INPUT);
+    setupLCD();
+    
 }
 
 void loop() {
-  //ultrasonic test
-  distance = hcsr04.read();
-  Serial.print("Distance in CM: ");
-  Serial.println(distance);
 
-  //dht test
-  delay(dhtDelayMS);
-  sensors_event_t event;
-  dht.temperature().getEvent(&event);
-  if (isnan(event.temperature)) {
-    Serial.println(F("Error reading temperature!"));
-  }
-  else {
-    Serial.print(F("Temperature: "));
-    Serial.print(event.temperature);
-    Serial.println(F("°C"));
-  }
-  // Get humidity event and print its value.
-  dht.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
-    Serial.println(F("Error reading humidity!"));
-  }
-  else {
-    Serial.print(F("Humidity: "));
-    Serial.print(event.relative_humidity);
-    Serial.println(F("%"));
-  }
-
-  //wl test
-  Serial.println(digitalRead(wl));
 }
 
-// FUNCTION DEFINITIONS
+// function definitions
+void setupLCD()
+{
+    Wire.begin(lcdPins.sda, lcdPins.scl);
+    lcd.begin(lcdValues.cols, lcdValues.rows);
+    lcd.backlight();
+    lcd.blink();    
+}
