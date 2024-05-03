@@ -4,13 +4,11 @@
 #include <DHT.h>
 #include <DHT_U.h>
 #include <Wire.h> 
-#include <hd44780.h>
-#include <hd44780ioClass/hd44780_I2Cexp.h>
 #include <Ultrasonic.h>
 
 // local includes
 #include "PinsDefinitions.h"
-#include "ObjectsDefinitions.h"
+#include "Display.h"
 
 // enums
 enum RelayState : byte 
@@ -22,50 +20,57 @@ enum RelayState : byte
 // pin structs
 RelaysPins relaysPins;
 SensorsPins sensorsPins;
-LCDPins lcdPins;
 JoystickPins joystickPins;
 
-// objects structs
-LCDValues lcdValues;
-DHTValues dhtValues;
-
 // objects creation
-DHT_Unified dht(sensorsPins.dht, dhtValues.dhtType);
-hd44780_I2Cexp lcd(lcdValues.address);
+DHT_Unified dht(sensorsPins.dht, 11);
 Ultrasonic ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho);
 
 // other variables
 int currentCursorY = 0;
 bool joystickMoved = false;
+bool tankNeedsRefill = false;
+bool autoMode = false;
+bool relayState[4] = { false, false, false, false };
 
 // function declarations
-void setupLCD();
 void setupJoystick();
+void setupRelays();
+
 void handleJoystickControl();
+void toggleRelay(byte relayPin);
 
 void setup() {
     Serial.begin(115200);  
 
+    setupRelays();
     setupLCD();
     setupJoystick();
 }
 
 void loop() {    
-    handleJoystickControl();    
+    handleJoystickControl();   
+    // displayHomePage();
+    displayRelaysPage();       
 }
 
 // function definitions
-void setupLCD() {
-    Wire.begin(lcdPins.sda, lcdPins.scl);
-    lcd.begin(lcdValues.cols, lcdValues.rows);
-    lcd.backlight();
-    lcd.blink();    
-}
-
 void setupJoystick() {
     pinMode(joystickPins.SW, INPUT_PULLUP);
     pinMode(joystickPins.VRx, INPUT);
     pinMode(joystickPins.VRy, INPUT);
+}
+
+void setupRelays() {
+    pinMode(relaysPins.topLight, OUTPUT);
+    pinMode(relaysPins.bottomLight, OUTPUT);
+    pinMode(relaysPins.pump, OUTPUT);
+    pinMode(relaysPins.fan, OUTPUT);
+
+    digitalWrite(relaysPins.topLight, RELAY_OFF);
+    digitalWrite(relaysPins.bottomLight, RELAY_OFF);
+    digitalWrite(relaysPins.pump, RELAY_OFF);
+    digitalWrite(relaysPins.fan, RELAY_OFF);
 }
 
 void handleJoystickControl() {
@@ -94,5 +99,10 @@ void handleJoystickControl() {
     }
 
     // move lcd cursor
-    lcd.setCursor(0, currentCursorY);
+    //lcd.setCursor(0, currentCursorY);
+}
+
+void toggleRelay(byte relayPin) {
+    int state = digitalRead(relayPin);
+    digitalWrite(relayPin, !state);
 }
