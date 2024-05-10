@@ -1,4 +1,6 @@
 #include "Display.h"
+#include "WiFiConfig.h"
+#include "TimeConfig.h"
 
 LCDValues lcdValues;
 LCDPins lcdPins;
@@ -24,7 +26,15 @@ void displayHomePage() {
     lcd.setCursor(1, 0);
     lcd.print("ESP32 - Greenhouse");
 
-    // TODO : row 1 timestamp
+    // row 1 timestamp    
+    char timeBuffer[17]; // "YYYY/MM/dd HH:mm\0"
+    if (timeinfo.tm_year > (1970 - 1900)) {
+    strftime(timeBuffer, sizeof(timeBuffer), "%Y/%m/%d %H:%M", &timeinfo);
+    } else {
+        strncpy(timeBuffer, "Syncing time...", sizeof(timeBuffer));
+    }
+    lcd.setCursor(2, 1);
+    lcd.print(timeBuffer);
 
     // row 2 tank level   
     if (firstTankDisplay || previousTankNeedsRefill != tankNeedsRefill) {

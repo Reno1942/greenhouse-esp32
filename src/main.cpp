@@ -9,6 +9,9 @@
 // local includes
 #include "PinsDefinitions.h"
 #include "Display.h"
+#include "WiFiConfig.h"
+#include "Credentials.h"
+#include "TimeConfig.h"
 
 // enums
 enum RelayState : byte 
@@ -17,10 +20,16 @@ enum RelayState : byte
     RELAY_ON = 0
 };
 
-// pin structs
+// structs
 RelaysPins relaysPins;
 SensorsPins sensorsPins;
 JoystickPins joystickPins;
+
+// time & ntp
+struct tm timeinfo;
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -14400;
+const int daylightOffset_sec = 0;
 
 // objects creation
 DHT_Unified dht(sensorsPins.dht, 11);
@@ -36,9 +45,11 @@ bool relayState[4] = { false, false, false, false };
 // function declarations
 void setupJoystick();
 void setupRelays();
+void setupWifi();
 
 void handleJoystickControl();
 void toggleRelay(byte relayPin);
+void updateTimeTask(void * parameter);
 
 void setup() {
     Serial.begin(115200);  
@@ -46,15 +57,29 @@ void setup() {
     setupRelays();
     setupLCD();
     setupJoystick();
+    setupWifi();
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);   
+    xTaskCreate(updateTimeTask, "Update Time", 10000, NULL, 1, NULL); 
 }
 
 void loop() {    
     handleJoystickControl();   
-    // displayHomePage();
-    displayRelaysPage();       
+    displayHomePage();
+    // displayRelaysPage();       
 }
 
 // function definitions
+void setupWifi() {
+    WiFi.begin(WIFI_SSID, WIFI_PWD);
+    Serial.println("Connecting to WiFi");
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+
+    Serial.println("Connected to WiFi");
+}
+
 void setupJoystick() {
     pinMode(joystickPins.SW, INPUT_PULLUP);
     pinMode(joystickPins.VRx, INPUT);
@@ -71,6 +96,17 @@ void setupRelays() {
     digitalWrite(relaysPins.bottomLight, RELAY_OFF);
     digitalWrite(relaysPins.pump, RELAY_OFF);
     digitalWrite(relaysPins.fan, RELAY_OFF);
+}
+
+void updateTimeTask(void * parameter) {
+    // run as long as task is active
+    for(;;) {
+        // update timeinfo, block up to 1000ms
+        getLocalTime(&timeinfo, 1000);
+
+        //delay 1000ms for other tasks (non blocking, RTOS task)
+        delay(1000);
+    }
 }
 
 void handleJoystickControl() {
