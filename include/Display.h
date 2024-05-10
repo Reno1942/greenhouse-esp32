@@ -19,6 +19,10 @@ extern bool tankNeedsRefill;
 extern bool autoMode;
 extern bool relayState[4];
 
+extern int lightOnTime;
+extern int lightOffTime;
+extern float minimumWaterDistance;
+
 void setupLCD();
 void displayHomePage();
 void displayRelaysPage();

@@ -35,7 +35,12 @@ const int daylightOffset_sec = 0;
 DHT_Unified dht(sensorsPins.dht, 11);
 Ultrasonic ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho);
 
+// light time settings
+int lightOnTime = 6;
+int lightOffTime = 0;
+
 // other variables
+const float minimumWaterDistance = 100.0;
 int currentCursorY = 0;
 bool joystickMoved = false;
 bool tankNeedsRefill = false;
@@ -101,7 +106,7 @@ void setupRelays() {
 void updateTimeTask(void * parameter) {
     // run as long as task is active
     for(;;) {
-        // update timeinfo, block up to 1000ms
+        // update timeinfo, block up to 1000ms on this task
         getLocalTime(&timeinfo, 1000);
 
         //delay 1000ms for other tasks (non blocking, RTOS task)
@@ -141,4 +146,16 @@ void handleJoystickControl() {
 void toggleRelay(byte relayPin) {
     int state = digitalRead(relayPin);
     digitalWrite(relayPin, !state);
+}
+
+void setLightOnTime(int newValue) {
+    lightOnTime = newValue;
+}
+
+void setLightOffTime(int newValue) {
+    lightOffTime = newValue;
+}
+
+void setWaterDistance() {
+
 }
