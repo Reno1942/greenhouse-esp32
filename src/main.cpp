@@ -9,21 +9,14 @@
 // local includes
 #include "PinsDefinitions.h"
 #include "Display.h"
+#include "Joystick.h"
 #include "WiFiConfig.h"
 #include "Credentials.h"
 #include "TimeConfig.h"
 
-// enums
-enum RelayState : byte 
-{
-    RELAY_OFF = 1,
-    RELAY_ON = 0
-};
-
-// structs
+// pins structs
 RelaysPins relaysPins;
 SensorsPins sensorsPins;
-JoystickPins joystickPins;
 
 // time & ntp
 struct tm timeinfo;
@@ -41,19 +34,16 @@ int lightOffTime = 0;
 
 // other variables
 const float minimumWaterDistance = 100.0;
-int currentCursorY = 0;
-bool joystickMoved = false;
 bool tankNeedsRefill = false;
 bool autoMode = false;
-bool relayState[4] = { false, false, false, false };
+RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_OFF };
 
 // function declarations
 void setupJoystick();
 void setupRelays();
 void setupWifi();
 
-void handleJoystickControl();
-void toggleRelay(byte relayPin);
+void toggleRelay(byte relayPin, RelayIndex relayIndex);
 void updateTimeTask(void * parameter);
 
 void setup() {
@@ -68,9 +58,7 @@ void setup() {
 }
 
 void loop() {    
-    handleJoystickControl();   
-    displayHomePage();
-    // displayRelaysPage();       
+    handleJoystickControl();
 }
 
 // function definitions
@@ -83,12 +71,6 @@ void setupWifi() {
     }
 
     Serial.println("Connected to WiFi");
-}
-
-void setupJoystick() {
-    pinMode(joystickPins.SW, INPUT_PULLUP);
-    pinMode(joystickPins.VRx, INPUT);
-    pinMode(joystickPins.VRy, INPUT);
 }
 
 void setupRelays() {
@@ -114,38 +96,12 @@ void updateTimeTask(void * parameter) {
     }
 }
 
-void handleJoystickControl() {
-    // margin for center return and center
-    int joystickCenter = 2449;
-    int joystickCenterMargin = 1000;    
-
-    // read the current joystick position, baseline is approx. 2449
-    int joystickY = analogRead(joystickPins.VRy);
-    
-    // reset joystick moving if is near the center
-    if (abs(joystickY - joystickCenter) <= joystickCenterMargin) {
-        joystickMoved = false;
-    }
-
-    // move cursor up if joystick moved up
-    if (joystickY < joystickCenter - joystickCenterMargin && currentCursorY > 0 && !joystickMoved) {
-        currentCursorY--;
-        joystickMoved = true;
-    }
-
-    // move cursor down if joystick moved down
-    if (joystickY > joystickCenter + joystickCenterMargin && currentCursorY < 3 && !joystickMoved) {
-        currentCursorY++;
-        joystickMoved = true;
-    }
-
-    // move lcd cursor
-    //lcd.setCursor(0, currentCursorY);
-}
-
-void toggleRelay(byte relayPin) {
-    int state = digitalRead(relayPin);
-    digitalWrite(relayPin, !state);
+void toggleRelay(byte relayPin, RelayIndex relayIndex) {
+    RelayState state = static_cast<RelayState>(digitalRead(relayPin));    
+    if (state == RELAY_ON) state = RELAY_OFF;        
+    else if (state == RELAY_OFF) state = RELAY_ON;    
+    digitalWrite(relayPin, state);    
+    relayState[relayIndex] = state;
 }
 
 void setLightOnTime(int newValue) {
@@ -154,8 +110,4 @@ void setLightOnTime(int newValue) {
 
 void setLightOffTime(int newValue) {
     lightOffTime = newValue;
-}
-
-void setWaterDistance() {
-
 }

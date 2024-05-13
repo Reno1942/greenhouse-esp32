@@ -3,12 +3,26 @@
 
 #include <Arduino.h>
 
+enum RelayState : byte 
+{
+    RELAY_OFF = 1,
+    RELAY_ON = 0,
+    RELAY_INIT = 2
+};
+
+enum RelayIndex {    
+    TopL,
+    BtmL,
+    Fan,
+    Pump
+};
+
 struct RelaysPins
 {
-    const byte fan = 2;
-    const byte pump = 3;
     const byte topLight = 10;
-    const byte bottomLight = 11;    
+    const byte bottomLight = 11;  
+    const byte fan = 2;
+    const byte pump = 3;    
 };
 
 struct JoystickPins

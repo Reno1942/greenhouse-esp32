@@ -15,18 +15,28 @@ struct LCDValues
     const byte rows = 4;    
 };
 
+enum Page
+{
+    HOME_PAGE,
+    RELAYS_PAGE,
+    SETTINGS_PAGE,
+    PAGE_COUNT
+};
+
 extern bool tankNeedsRefill;
 extern bool autoMode;
-extern bool relayState[4];
+extern RelayState relayState[4];
 
 extern int lightOnTime;
 extern int lightOffTime;
-extern float minimumWaterDistance;
+extern const float minimumWaterDistance;
 
 void setupLCD();
 void displayHomePage();
 void displayRelaysPage();
+void displaySettingsPage();
 void clearRow(int row);
+void clearScreen();
 
 
 #endif
