@@ -4,9 +4,13 @@ int joystickCenter = 2449;
 int joystickCenterMargin = 1000;
 int currentCursorY = 0;
 bool joystickMoved = false;
+bool changingLightOnTime = false;
+bool changingLightOffTime = false;
 Page currentPage = HOME_PAGE;
 
 JoystickPins joystickPins;
+RelaysPins relayPins;
+extern FunctionPointer relayFunctions[];
 
 void setupJoystick() {
     pinMode(joystickPins.SW, INPUT_PULLUP);
@@ -63,9 +67,57 @@ void switchPage() {
 
 void handleJoystickControl() {
     int joystickY = analogRead(joystickPins.VRy);
-
-    resetJoystick(joystickY);
-    moveCursorUp(joystickY);
-    moveCursorDown(joystickY);
     switchPage();
+    resetJoystick(joystickY);
+
+    if (changingLightOnTime) {
+        changeLightTime(lightOnTime, joystickY);        
+    } else if (changingLightOffTime) {
+        changeLightTime(lightOffTime, joystickY);        
+    } else {        
+        moveCursorUp(joystickY);
+        moveCursorDown(joystickY);        
+    }        
+}
+
+void handleJoystickClick() {
+    static unsigned long lastPressTime = 0;
+    const unsigned long debounceDelay = 200;
+
+    if (digitalRead(joystickPins.SW) == LOW) {
+        unsigned long currentTime = millis();
+
+        if (currentTime - lastPressTime > debounceDelay) {
+            Serial.println("Switch clicked");
+            lastPressTime = currentTime;
+            
+            if (currentPage == SETTINGS_PAGE) {
+                if (currentCursorY == 0) {
+                    changingLightOnTime = !changingLightOnTime;
+                    changingLightOffTime = false;
+                } else if (currentCursorY == 1) {
+                    changingLightOffTime = !changingLightOffTime;
+                    changingLightOnTime = false;
+                }
+            }
+
+            else if (currentPage == RELAYS_PAGE) {
+                relayFunctions[currentCursorY]();
+            }
+        }
+    }
+}
+
+void changeLightTime(int &lightTime, int joystickY) {
+    if (joystickY < joystickCenter - joystickCenterMargin && !joystickMoved) {
+        if (lightTime < 23 && (lightTime + 1) != (changingLightOnTime ? lightOffTime : lightOnTime)) {
+            lightTime++;            
+        }
+        joystickMoved = true;
+    } else if (joystickY > joystickCenter + joystickCenterMargin && !joystickMoved) {
+        if (lightTime > 0 && (lightTime - 1) != (changingLightOnTime ? lightOffTime : lightOnTime)) {
+            lightTime--;            
+        }
+        joystickMoved = true;
+    }
 }

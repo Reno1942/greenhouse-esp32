@@ -3,20 +3,6 @@
 
 #include <Arduino.h>
 
-enum RelayState : byte 
-{
-    RELAY_OFF = 1,
-    RELAY_ON = 0,
-    RELAY_INIT = 2
-};
-
-enum RelayIndex {    
-    TopL,
-    BtmL,
-    Fan,
-    Pump
-};
-
 struct RelaysPins
 {
     const byte topLight = 10;

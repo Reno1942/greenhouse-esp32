@@ -19,6 +19,7 @@ void setupLCD() {
     Wire.begin(lcdPins.sda, lcdPins.scl);
     lcd.begin(lcdValues.cols, lcdValues.rows);
     lcd.backlight();        
+    lcd.blink();
 }
 
 void displayHomePage() {
@@ -34,18 +35,18 @@ void displayHomePage() {
         strncpy(timeBuffer, "Syncing time...", sizeof(timeBuffer));
     }
     lcd.setCursor(2, 1);
-    lcd.print(timeBuffer);
+    lcd.print(timeBuffer);    
 
     // row 2 tank level   
     if (previousTankNeedsRefill != tankNeedsRefill || firstRefillDisplay) {
         clearRow(2);
-        lcd.setCursor(0, 2);
-        lcd.print(tankNeedsRefill ? "X   Tank : Refill" : "X   Tank : Ok");       
+        lcd.setCursor(4, 2);
+        lcd.print(tankNeedsRefill ? "Tank : Refill" : "Tank : Ok");       
         previousTankNeedsRefill = tankNeedsRefill;
         firstRefillDisplay = false;
     } else {
-        lcd.setCursor(0, 2);
-        lcd.print(previousTankNeedsRefill ? "X   Tank : Refill" : "X   Tank : Ok");
+        lcd.setCursor(4, 2);
+        lcd.print(previousTankNeedsRefill ? "Tank : Refill" : "Tank : Ok");
     }
 
     // row 3 mode
@@ -96,6 +97,17 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", lightOnTime);
         lcd.print(timeBuffer);
         lcd.print("H");
+
+        previousLightOnTime = lightOnTime;
+    } else {
+        clearRow(0);
+        lcd.setCursor(0, 0);
+        lcd.print("X LightOn : ");
+
+        char timeBuffer[3];
+        sprintf(timeBuffer, "%02d", previousLightOnTime);
+        lcd.print(timeBuffer);
+        lcd.print("H");
     }
 
     // row 1 light off
@@ -108,10 +120,21 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", lightOffTime);
         lcd.print(timeBuffer);
         lcd.print("H");
+
+        previousLightOffTime = lightOffTime;
+    } else {
+        clearRow(1);
+        lcd.setCursor(0, 1);
+        lcd.print("X LightOff: ");
+
+        char timeBuffer[3];
+        sprintf(timeBuffer, "%02d", previousLightOffTime);
+        lcd.print(timeBuffer);
+        lcd.print("H");
     }
 
     // row 2 day & night
-    if (previousLightOnTime != lightOnTime && previousLightOffTime != lightOffTime) {
+    if (previousLightOnTime != lightOnTime || previousLightOffTime != lightOffTime) {
         int dayDuration = lightOffTime - lightOnTime;
         if (dayDuration < 0) dayDuration += 24;
         int nightDuration = 24 - dayDuration;
@@ -124,7 +147,6 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", dayDuration);
         lcd.print(timeBuffer);
         lcd.print("H");
-
         
         lcd.setCursor(11, 2);
         lcd.print("Night-");        
@@ -143,13 +165,12 @@ void displaySettingsPage() {
 
 void clearRow(int row) {
     lcd.setCursor(0, row);
-    lcd.print("                    ");
+    lcd.print("                    ");    
 }
 
 void clearScreen() {
     for (size_t i = 0; i < 4; i++)
     {
         clearRow(i);
-    }
-    
+    }   
 }

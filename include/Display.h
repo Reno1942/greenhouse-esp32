@@ -7,6 +7,7 @@
 #include <hd44780ioClass/hd44780_I2Cexp.h>
 
 #include "PinsDefinitions.h"
+#include "Relay.h"
 
 struct LCDValues
 {
