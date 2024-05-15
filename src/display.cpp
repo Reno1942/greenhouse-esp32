@@ -104,8 +104,6 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", lightOnTime);
         lcd.print(timeBuffer);
         lcd.print("H");
-
-        previousLightOnTime = lightOnTime;
     }
 
     // row 1 light off
@@ -118,11 +116,9 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", lightOffTime);
         lcd.print(timeBuffer);
         lcd.print("H");
-
-        previousLightOffTime = lightOffTime;
     }
 
-    // row 2 day & night
+    // row 2 & 3 day duration
     if (refreshSettingsPage || previousLightOnTime != lightOnTime || previousLightOffTime != lightOffTime) {
         int dayDuration = lightOffTime - lightOnTime;
         if (dayDuration < 0) dayDuration += 24;
@@ -132,18 +128,20 @@ void displaySettingsPage() {
         clearRow(2);
         
         lcd.setCursor(2, 2);
-        lcd.print("Day-");        
+        lcd.print("Day     : ");        
         sprintf(timeBuffer, "%02d", dayDuration);
         lcd.print(timeBuffer);
         lcd.print("H");
         
-        lcd.setCursor(11, 2);
-        lcd.print("Night-");        
+        lcd.setCursor(2, 3);
+        lcd.print("Night   : ");        
         sprintf(timeBuffer, "%02d", nightDuration);
         lcd.print(timeBuffer);
         lcd.print("H");
-    }         
+    }            
     
+    previousLightOnTime = lightOnTime;
+    previousLightOffTime = lightOffTime;
     refreshSettingsPage = false;
     updateCursor();
 }
