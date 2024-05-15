@@ -34,7 +34,6 @@ const unsigned long dhtUpdateInterval = 5000;
 
 
 // function declarations
-void setupJoystick();
 void setupWifi();
 void updateTimeTask(void * parameter);
 
@@ -58,6 +57,8 @@ void loop() {
         updateDhtReadings();
         lastDhtUpdate = millis();
     }
+
+    if (autoMode) runAutoMode();
 }
 
 // function definitions
@@ -81,8 +82,6 @@ void setupWifi() {
     Serial.println("Connected to WiFi");
 }
 
-
-
 void updateTimeTask(void * parameter) {
     // run as long as task is active
     for(;;) {
@@ -92,23 +91,4 @@ void updateTimeTask(void * parameter) {
         //delay 1000ms for other tasks (non blocking, RTOS task)
         delay(1000);
     }
-}
-
-void toggleAutoMode() {
-    autoMode = !autoMode;
-
-    if (!autoMode) return;
-
-    // manage lights
-    if (timeinfo.tm_hour >= lightOffTime && timeinfo.tm_hour < lightOnTime) {
-        if (digitalRead(relaysPins.topLight) == RELAY_ON) {
-            toggleRelay(relaysPins.topLight, TopL);
-        }
-
-        if (digitalRead(relaysPins.bottomLight) == RELAY_ON) {
-            toggleRelay(relaysPins.bottomLight, BtmL);
-        }
-    }
-
-    // manage fan
 }

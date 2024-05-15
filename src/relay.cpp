@@ -21,6 +21,10 @@ void toggleRelay(byte relayPin, RelayIndex relayIndex) {
     relayState[relayIndex] = state;
 }
 
+bool isRelayOn(byte relayPin){
+    return digitalRead(relayPin) == RELAY_ON;
+}
+
 void toggleTopLight() {
     toggleRelay(relaysPins.topLight, TopL);
 }

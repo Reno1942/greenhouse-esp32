@@ -108,13 +108,12 @@ void handleJoystickClick() {
     if (digitalRead(joystickPins.SW) == LOW) {
         unsigned long currentTime = millis();
 
-        if (currentTime - lastPressTime > debounceDelay) {
-            Serial.println("Switch clicked");
+        if (currentTime - lastPressTime > debounceDelay) {            
             lastPressTime = currentTime;
 
             if (currentPage == HOME_PAGE) {
                 if (currentCursorY == 3) {
-                    //toggleAutoMode();
+                    toggleAutoMode();
                 }
             }
             

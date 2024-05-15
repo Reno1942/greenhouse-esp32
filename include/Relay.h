@@ -24,8 +24,10 @@ typedef void (*FunctionPointer)();
 
 void setupRelays();
 void toggleRelay(byte relayPin, RelayIndex relayIndex);
+bool isRelayOn(byte relayPin);
 void toggleTopLight();
 void toggleBottomLight();
 void toggleFan();
 void togglePump();
+
 #endif

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "PinsDefinitions.h"
 #include "Display.h"
+#include "AutoMode.h"
 
 extern JoystickPins joystickPins;
 
@@ -21,5 +22,6 @@ void switchPage();
 void handleJoystickControl();
 void handleJoystickClick();
 void changeLightTime(int &lightTime, int joystickY);
+void toggleAutoMode();
 
 #endif
