@@ -8,6 +8,7 @@
 
 #include "PinsDefinitions.h"
 #include "Relay.h"
+#include "Sensors.h"
 
 struct LCDValues
 {
@@ -30,7 +31,10 @@ extern RelayState relayState[4];
 
 extern int lightOnTime;
 extern int lightOffTime;
-extern const float minimumWaterDistance;
+extern int currentCursorY;
+
+extern float currentTemp;
+extern float currentHumidity;
 
 void setupLCD();
 void displayHomePage();
@@ -38,6 +42,6 @@ void displayRelaysPage();
 void displaySettingsPage();
 void clearRow(int row);
 void clearScreen();
-
+void updateCursor();
 
 #endif

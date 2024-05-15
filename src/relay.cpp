@@ -1,6 +1,5 @@
 #include "Relay.h"
 
-RelaysPins relaysPins;
 RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_OFF };
 
 void setupRelays() {

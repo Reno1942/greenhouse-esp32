@@ -1,41 +1,36 @@
-// libraries
 #include <Arduino.h>
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
 #include <Wire.h> 
-#include <Ultrasonic.h>
 
-// local includes
 #include "PinsDefinitions.h"
 #include "Display.h"
 #include "Joystick.h"
+#include "Sensors.h"
 #include "Relay.h"
 #include "WiFiConfig.h"
 #include "Credentials.h"
 #include "TimeConfig.h"
 
-// pins structs
+RelaysPins relaysPins;
 SensorsPins sensorsPins;
+JoystickPins joystickPins;
 
-// time & ntp
 struct tm timeinfo;
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -14400;
 const int daylightOffset_sec = 0;
 
-// objects creation
-DHT_Unified dht(sensorsPins.dht, 11);
-Ultrasonic ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho);
-
-// light time settings
 int lightOnTime = 6;
 int lightOffTime = 0;
 
-// other variables
+float currentTemp = -1;
+float currentHumidity = -1;
+
 const float minimumWaterDistance = 100.0;
 bool tankNeedsRefill = false;
 bool autoMode = false;
+
+unsigned long lastDhtUpdate = 0;
+const unsigned long dhtUpdateInterval = 5000;
 
 
 // function declarations
@@ -49,6 +44,7 @@ void setup() {
     setupRelays();
     setupLCD();
     setupJoystick();
+    setupDHT();
     setupWifi();
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);   
     xTaskCreate(updateTimeTask, "Update Time", 10000, NULL, 1, NULL); 
@@ -57,6 +53,11 @@ void setup() {
 void loop() {    
     handleJoystickControl();
     handleJoystickClick();
+
+    if (millis() - lastDhtUpdate >= dhtUpdateInterval) {
+        updateDhtReadings();
+        lastDhtUpdate = millis();
+    }
 }
 
 // function definitions
@@ -93,10 +94,21 @@ void updateTimeTask(void * parameter) {
     }
 }
 
-void setLightOnTime(int newValue) {
-    lightOnTime = newValue;
-}
+void toggleAutoMode() {
+    autoMode = !autoMode;
 
-void setLightOffTime(int newValue) {
-    lightOffTime = newValue;
+    if (!autoMode) return;
+
+    // manage lights
+    if (timeinfo.tm_hour >= lightOffTime && timeinfo.tm_hour < lightOnTime) {
+        if (digitalRead(relaysPins.topLight) == RELAY_ON) {
+            toggleRelay(relaysPins.topLight, TopL);
+        }
+
+        if (digitalRead(relaysPins.bottomLight) == RELAY_ON) {
+            toggleRelay(relaysPins.bottomLight, BtmL);
+        }
+    }
+
+    // manage fan
 }

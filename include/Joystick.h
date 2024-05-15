@@ -5,8 +5,13 @@
 #include "PinsDefinitions.h"
 #include "Display.h"
 
+extern JoystickPins joystickPins;
+
 extern int lightOnTime;
 extern int lightOffTime;
+extern bool refreshHomePage;
+extern bool refreshRelaysPage;
+extern bool refreshSettingsPage;
 
 void setupJoystick();
 void resetJoystick(int joystickY);

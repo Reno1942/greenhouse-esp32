@@ -18,6 +18,8 @@ enum RelayIndex {
     Pump
 };
 
+extern RelaysPins relaysPins;
+
 typedef void (*FunctionPointer)();
 
 void setupRelays();

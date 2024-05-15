@@ -8,8 +8,6 @@ bool changingLightOnTime = false;
 bool changingLightOffTime = false;
 Page currentPage = HOME_PAGE;
 
-JoystickPins joystickPins;
-RelaysPins relayPins;
 extern FunctionPointer relayFunctions[];
 
 void setupJoystick() {
@@ -32,6 +30,17 @@ void moveCursorUp(int joystickY) {
             clearScreen();
             currentPage = currentPage == HOME_PAGE ? SETTINGS_PAGE : static_cast<Page>(currentPage - 1);
             currentCursorY = 3;
+            switch (currentPage)
+            {
+            case HOME_PAGE:
+                refreshHomePage = true;
+            case RELAYS_PAGE:
+                refreshRelaysPage = true;
+                break;
+            case SETTINGS_PAGE:
+                refreshSettingsPage = true;
+                break;
+            }
         }
         joystickMoved = true;
     }
@@ -45,6 +54,18 @@ void moveCursorDown(int joystickY) {
             clearScreen();
             currentPage = static_cast<Page>((currentPage + 1) % PAGE_COUNT);
             currentCursorY = 0;
+            switch (currentPage)
+            {
+            case HOME_PAGE:
+                refreshHomePage = true;
+                break;
+            case RELAYS_PAGE:
+                refreshRelaysPage = true;
+                break;
+            case SETTINGS_PAGE:
+                refreshSettingsPage = true;
+                break;
+            }
         }        
         joystickMoved = true;
     }
@@ -53,13 +74,13 @@ void moveCursorDown(int joystickY) {
 void switchPage() {
     switch (currentPage)
         {
-        case HOME_PAGE:        
+        case HOME_PAGE:                   
             displayHomePage();
             break;
-        case RELAYS_PAGE:        
+        case RELAYS_PAGE:               
             displayRelaysPage();
             break;
-        case SETTINGS_PAGE:        
+        case SETTINGS_PAGE:                   
             displaySettingsPage();
             break;
         }
@@ -90,8 +111,14 @@ void handleJoystickClick() {
         if (currentTime - lastPressTime > debounceDelay) {
             Serial.println("Switch clicked");
             lastPressTime = currentTime;
+
+            if (currentPage == HOME_PAGE) {
+                if (currentCursorY == 3) {
+                    //toggleAutoMode();
+                }
+            }
             
-            if (currentPage == SETTINGS_PAGE) {
+            else if (currentPage == SETTINGS_PAGE) {
                 if (currentCursorY == 0) {
                     changingLightOnTime = !changingLightOnTime;
                     changingLightOffTime = false;

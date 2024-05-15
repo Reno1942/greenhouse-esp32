@@ -7,25 +7,38 @@ LCDPins lcdPins;
 
 hd44780_I2Cexp lcd(lcdValues.address);
 
+bool refreshHomePage = true;
+bool refreshRelaysPage = true;
+bool refreshSettingsPage = true;
+
 bool previousTankNeedsRefill;
 bool previousAutoMode; 
-bool firstAutoDisplay = true;
-bool firstRefillDisplay = true;
+String previousTimeBuffer = "";
 RelayState previousRelayState[4] = {RELAY_INIT, RELAY_INIT, RELAY_INIT, RELAY_INIT};
-bool previousLightOnTime = -1;
-bool previousLightOffTime = -1;
+int previousLightOnTime = -1;
+int previousLightOffTime = -1;
+float previousTemp = -1;
+float previousHumidity = -1;
 
 void setupLCD() {
     Wire.begin(lcdPins.sda, lcdPins.scl);
     lcd.begin(lcdValues.cols, lcdValues.rows);
-    lcd.backlight();        
-    lcd.blink();
+    lcd.backlight();   
+    lcd.blink();         
 }
 
 void displayHomePage() {
-    // row 0 title
-    lcd.setCursor(1, 0);
-    lcd.print("ESP32 - Greenhouse");
+    // row 0 title    
+    if (refreshHomePage || previousTemp != currentTemp || previousHumidity != currentHumidity) {
+        lcd.setCursor(0, 0);
+        lcd.print("Temp:");
+        lcd.print(currentTemp, 1);
+        lcd.print("C Hum:");
+        lcd.print(currentHumidity, 1);
+        lcd.print("%");
+        previousTemp = currentTemp;
+        previousHumidity = currentHumidity;
+    }    
 
     // row 1 timestamp    
     char timeBuffer[17];
@@ -34,32 +47,30 @@ void displayHomePage() {
     } else {
         strncpy(timeBuffer, "Syncing time...", sizeof(timeBuffer));
     }
-    lcd.setCursor(2, 1);
-    lcd.print(timeBuffer);    
+    if (refreshHomePage || previousTimeBuffer != timeBuffer) {
+        lcd.setCursor(2, 1);
+        lcd.print(timeBuffer);  
+        previousTimeBuffer = timeBuffer;
+    }
+      
 
     // row 2 tank level   
-    if (previousTankNeedsRefill != tankNeedsRefill || firstRefillDisplay) {
+    if (refreshHomePage || previousTankNeedsRefill != tankNeedsRefill) {
         clearRow(2);
         lcd.setCursor(4, 2);
         lcd.print(tankNeedsRefill ? "Tank : Refill" : "Tank : Ok");       
-        previousTankNeedsRefill = tankNeedsRefill;
-        firstRefillDisplay = false;
-    } else {
-        lcd.setCursor(4, 2);
-        lcd.print(previousTankNeedsRefill ? "Tank : Refill" : "Tank : Ok");
+        previousTankNeedsRefill = tankNeedsRefill;        
     }
 
     // row 3 mode
-    if (previousAutoMode != autoMode || firstAutoDisplay) {
+    if (refreshHomePage || previousAutoMode != autoMode) {
         clearRow(3);
         lcd.setCursor(0, 3);
         lcd.print(autoMode ? "X   Mode : Auto" : "X   Mode : Manual");
-        previousAutoMode = autoMode;
-        firstAutoDisplay = false;
-    } else {
-        lcd.setCursor(0, 3);
-        lcd.print(previousAutoMode ? "X   Mode : Auto" : "X   Mode : Manual");
-    }    
+        previousAutoMode = autoMode;        
+    }     
+    updateCursor();
+    refreshHomePage = false; 
 }
 
 void displayRelaysPage() {
@@ -68,7 +79,7 @@ void displayRelaysPage() {
 
     for (size_t i = 0; i < relayCount; i++)
     {
-        if (previousRelayState[i] != relayState[i]) {
+        if (refreshRelaysPage || previousRelayState[i] != relayState[i]) {
             clearRow(i);
             lcd.setCursor(0, i);
             lcd.print(relayNames[i]);
@@ -76,19 +87,15 @@ void displayRelaysPage() {
             lcd.print(": ");
             lcd.print(relayState[i] == RELAY_ON ? "On" : "Off");
             previousRelayState[i] = relayState[i]; 
-        } else {
-            lcd.setCursor(0, i);
-            lcd.print(relayNames[i]);
-            lcd.setCursor(9, i);
-            lcd.print(": ");
-            lcd.print(previousRelayState[i] == RELAY_ON ? "On" : "Off");
         }
-    }           
+    }  
+    refreshRelaysPage = false;    
+    updateCursor();     
 }
 
 void displaySettingsPage() {
     // row 0 light on
-    if (previousLightOnTime != lightOnTime) {
+    if (refreshSettingsPage || previousLightOnTime != lightOnTime) {
         clearRow(0);
         lcd.setCursor(0, 0);
         lcd.print("X LightOn : ");
@@ -99,19 +106,10 @@ void displaySettingsPage() {
         lcd.print("H");
 
         previousLightOnTime = lightOnTime;
-    } else {
-        clearRow(0);
-        lcd.setCursor(0, 0);
-        lcd.print("X LightOn : ");
-
-        char timeBuffer[3];
-        sprintf(timeBuffer, "%02d", previousLightOnTime);
-        lcd.print(timeBuffer);
-        lcd.print("H");
     }
 
     // row 1 light off
-    if (previousLightOffTime != lightOffTime) {
+    if (refreshSettingsPage || previousLightOffTime != lightOffTime) {
         clearRow(1);
         lcd.setCursor(0, 1);
         lcd.print("X LightOff: ");
@@ -122,19 +120,10 @@ void displaySettingsPage() {
         lcd.print("H");
 
         previousLightOffTime = lightOffTime;
-    } else {
-        clearRow(1);
-        lcd.setCursor(0, 1);
-        lcd.print("X LightOff: ");
-
-        char timeBuffer[3];
-        sprintf(timeBuffer, "%02d", previousLightOffTime);
-        lcd.print(timeBuffer);
-        lcd.print("H");
     }
 
     // row 2 day & night
-    if (previousLightOnTime != lightOnTime || previousLightOffTime != lightOffTime) {
+    if (refreshSettingsPage || previousLightOnTime != lightOnTime || previousLightOffTime != lightOffTime) {
         int dayDuration = lightOffTime - lightOnTime;
         if (dayDuration < 0) dayDuration += 24;
         int nightDuration = 24 - dayDuration;
@@ -153,14 +142,10 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", nightDuration);
         lcd.print(timeBuffer);
         lcd.print("H");
-    }
-
-    // row 3 water dist        
-    lcd.setCursor(2, 4);
-    lcd.print("WaterDist: ");
-    int waterDistanceInt = static_cast<int>(minimumWaterDistance);
-    lcd.print(waterDistanceInt);
-    lcd.print("cm");      
+    }         
+    
+    refreshSettingsPage = false;
+    updateCursor();
 }
 
 void clearRow(int row) {
@@ -173,4 +158,8 @@ void clearScreen() {
     {
         clearRow(i);
     }   
+}
+
+void updateCursor() {    
+    lcd.setCursor(0, currentCursorY);    
 }
