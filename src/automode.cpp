@@ -1,5 +1,6 @@
 #include "AutoMode.h"
 
+// should fan be turned on
 bool fanOn = false;
 
 void toggleAutoMode() {

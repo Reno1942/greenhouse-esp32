@@ -1,5 +1,6 @@
 #include "Relay.h"
 
+// Initial states of the relays
 RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_ON };
 
 void setupRelays() {

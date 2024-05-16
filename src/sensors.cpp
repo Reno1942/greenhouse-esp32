@@ -33,15 +33,15 @@ void updateDhtReadings() {
     currentHumidity = readHumidity();
 }
 
-void updateTankLevel() {
+void updateTankLevelPercentage() {
     int distanceCM = ultrasonic.read();
     
-    tankLevel = 0;
+    tankLevelPercentage = 0;
     if (distanceCM <= minWaterDistance) {
-        tankLevel = 100;
+        tankLevelPercentage = 100;
     }
     else if (distanceCM <= maxWaterDistance) {
-        tankLevel = ((maxWaterDistance - distanceCM) / (float)(maxWaterDistance - minWaterDistance)) * 100;
+        tankLevelPercentage = ((maxWaterDistance - distanceCM) / (float)(maxWaterDistance - minWaterDistance)) * 100;
     }   
     
 }

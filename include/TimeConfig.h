@@ -3,6 +3,6 @@
 
 #include <time.h>
 
-extern struct tm timeinfo;
+extern struct tm timeinfo; /** < External declaration of time information. */
 
 #endif

@@ -11,7 +11,7 @@ bool refreshHomePage = true;
 bool refreshRelaysPage = true;
 bool refreshSettingsPage = true;
 
-int previousTankLevel;
+int previousTankLevelPercentage;
 bool previousAutoMode; 
 String previousTimeBuffer = "";
 RelayState previousRelayState[4] = {RELAY_INIT, RELAY_INIT, RELAY_INIT, RELAY_INIT};
@@ -55,13 +55,13 @@ void displayHomePage() {
       
 
     // row 2 tank level   
-    if (refreshHomePage || previousTankLevel != tankLevel) {
+    if (refreshHomePage || previousTankLevelPercentage != tankLevelPercentage) {
         clearRow(2);
         lcd.setCursor(4, 2);
         lcd.print("Tank : ");
-        lcd.print(tankLevel);
+        lcd.print(tankLevelPercentage);
         lcd.print("%");
-        previousTankLevel = tankLevel;        
+        previousTankLevelPercentage = tankLevelPercentage;        
     }
 
     // row 3 mode
