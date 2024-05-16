@@ -11,10 +11,14 @@ extern SensorsPins sensorsPins;
 
 extern float currentTemp;
 extern float currentHumidity;
+extern int tankLevel;
 
 void setupDHT();
+void setupWaterLevelSensor();
 float readTemperature();
 float readHumidity();
 void updateDhtReadings();
+void updateTankLevel();
+bool isSensorReached();
 
 #endif

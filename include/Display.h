@@ -25,7 +25,7 @@ enum Page
     PAGE_COUNT
 };
 
-extern bool tankNeedsRefill;
+extern int tankLevel;
 extern bool autoMode;
 extern RelayState relayState[4];
 

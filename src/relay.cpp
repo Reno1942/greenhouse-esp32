@@ -1,6 +1,6 @@
 #include "Relay.h"
 
-RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_OFF };
+RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_ON };
 
 void setupRelays() {
     pinMode(relaysPins.topLight, OUTPUT);
@@ -10,7 +10,7 @@ void setupRelays() {
 
     digitalWrite(relaysPins.topLight, RELAY_OFF);
     digitalWrite(relaysPins.bottomLight, RELAY_OFF);
-    digitalWrite(relaysPins.pump, RELAY_OFF);
+    digitalWrite(relaysPins.pump, RELAY_ON);
     digitalWrite(relaysPins.fan, RELAY_OFF);
 }
 

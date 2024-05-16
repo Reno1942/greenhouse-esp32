@@ -25,43 +25,70 @@ int lightOffTime = 0;
 float currentTemp = -1;
 float currentHumidity = -1;
 
-const float minimumWaterDistance = 100.0;
-bool tankNeedsRefill = false;
-bool autoMode = false;
+int tankLevel = -1;
+bool autoMode = true;
 
-unsigned long lastDhtUpdate = 0;
-const unsigned long dhtUpdateInterval = 5000;
+unsigned long now = 0;
+unsigned long lastSensorUpdate = 0;
+const unsigned long sensorUpdateDelay = 1000;
+unsigned long lastPumpOffTime = 0;
+const unsigned long pumpOffDelay = 60000;
+unsigned long lastTimeUpdate = 0;
+const unsigned long timeUpdateDelay = 1000;
 
-
-// function declarations
 void setupWifi();
 void updateTimeTask(void * parameter);
 
 void setup() {
     Serial.begin(115200);  
-
     setupRelays();
     setupLCD();
     setupJoystick();
     setupDHT();
+    setupWaterLevelSensor();
     setupWifi();
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);   
-    xTaskCreate(updateTimeTask, "Update Time", 10000, NULL, 1, NULL); 
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);       
 }
 
-void loop() {    
+void loop() {  
+    // update current millis
+    now = millis();
+
+    // handle joystick 
     handleJoystickControl();
     handleJoystickClick();
 
-    if (millis() - lastDhtUpdate >= dhtUpdateInterval) {
+    // update dht and ultrasonic readings
+    if (now - lastSensorUpdate >= sensorUpdateDelay) {
         updateDhtReadings();
-        lastDhtUpdate = millis();
+        updateTankLevel();
+        lastSensorUpdate = now;
     }
 
+    // update time
+    if (now - lastTimeUpdate >= timeUpdateDelay) {
+        getLocalTime(&timeinfo, 1000);
+    }
+
+    // run automode
     if (autoMode) runAutoMode();
+    isSensorReached();    
+
+    // turn off the pump if water level is too low
+    bool isTankEmptyAndPumpOn = tankLevel == 0 && isRelayOn(relaysPins.pump);
+    bool isTankOkAndPumpOff = tankLevel > 5 && !isRelayOn(relaysPins.pump);
+    bool isDelayPassed = now - lastPumpOffTime >= pumpOffDelay;
+    if (isTankEmptyAndPumpOn || (isTankOkAndPumpOff && autoMode && isDelayPassed)) {
+        togglePump();
+    }
+
+    // turn off the pump if water level sensor is reached
+    if (isSensorReached() && isRelayOn(relaysPins.pump)) {
+        togglePump();
+        lastPumpOffTime = now;
+    }        
 }
 
-// function definitions
 void setupWifi() {
     const unsigned long wifiTimeout = 10000;
     unsigned long startTime = millis();
@@ -80,15 +107,4 @@ void setupWifi() {
     }
 
     Serial.println("Connected to WiFi");
-}
-
-void updateTimeTask(void * parameter) {
-    // run as long as task is active
-    for(;;) {
-        // update timeinfo, block up to 1000ms on this task
-        getLocalTime(&timeinfo, 1000);
-
-        //delay 1000ms for other tasks (non blocking, RTOS task)
-        delay(1000);
-    }
 }

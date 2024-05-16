@@ -127,7 +127,7 @@ void handleJoystickClick() {
                 }
             }
 
-            else if (currentPage == RELAYS_PAGE) {
+            else if (currentPage == RELAYS_PAGE && !autoMode) {
                 relayFunctions[currentCursorY]();
             }
         }
