@@ -28,7 +28,16 @@ void setupLCD() {
 }
 
 void displayHomePage() {
-    // row 0 title    
+    displayTempAndHumidity();     
+    displayTime();
+    displayTankLevel();
+    displayMode();
+        
+    updateCursor();
+    refreshHomePage = false; 
+}
+
+void displayTempAndHumidity() {
     if (refreshHomePage || previousTemp != currentTemp || previousHumidity != currentHumidity) {
         lcd.setCursor(0, 0);
         lcd.print("Temp:");
@@ -38,9 +47,10 @@ void displayHomePage() {
         lcd.print("%");
         previousTemp = currentTemp;
         previousHumidity = currentHumidity;
-    }    
+    } 
+}
 
-    // row 1 timestamp    
+void displayTime() {
     char timeBuffer[17];
     if (timeinfo.tm_year > (1970 - 1900)) {
         strftime(timeBuffer, sizeof(timeBuffer), "%Y/%m/%d %H:%M", &timeinfo);
@@ -52,9 +62,9 @@ void displayHomePage() {
         lcd.print(timeBuffer);  
         previousTimeBuffer = timeBuffer;
     }
-      
+}
 
-    // row 2 tank level   
+void displayTankLevel() {
     if (refreshHomePage || previousTankLevelPercentage != tankLevelPercentage) {
         clearRow(2);
         lcd.setCursor(4, 2);
@@ -63,16 +73,15 @@ void displayHomePage() {
         lcd.print("%");
         previousTankLevelPercentage = tankLevelPercentage;        
     }
+}
 
-    // row 3 mode
+void displayMode() {
     if (refreshHomePage || previousAutoMode != autoMode) {
         clearRow(3);
         lcd.setCursor(0, 3);
         lcd.print(autoMode ? "X   Mode : Auto" : "X   Mode : Manual");
         previousAutoMode = autoMode;        
-    }     
-    updateCursor();
-    refreshHomePage = false; 
+    } 
 }
 
 void displayRelaysPage() {
@@ -96,7 +105,16 @@ void displayRelaysPage() {
 }
 
 void displaySettingsPage() {
-    // row 0 light on
+    displayLightCycle();
+    displayDayDuration();                
+    
+    updateCursor();
+    previousLightOnTime = lightOnTime;
+    previousLightOffTime = lightOffTime;
+    refreshSettingsPage = false;    
+}
+
+void displayLightCycle() {
     if (refreshSettingsPage || previousLightOnTime != lightOnTime) {
         clearRow(0);
         lcd.setCursor(0, 0);
@@ -108,7 +126,6 @@ void displaySettingsPage() {
         lcd.print("H");
     }
 
-    // row 1 light off
     if (refreshSettingsPage || previousLightOffTime != lightOffTime) {
         clearRow(1);
         lcd.setCursor(0, 1);
@@ -119,8 +136,9 @@ void displaySettingsPage() {
         lcd.print(timeBuffer);
         lcd.print("H");
     }
+}
 
-    // row 2 & 3 day duration
+void displayDayDuration() {
     if (refreshSettingsPage || previousLightOnTime != lightOnTime || previousLightOffTime != lightOffTime) {
         int dayDuration = lightOffTime - lightOnTime;
         if (dayDuration < 0) dayDuration += 24;
@@ -140,12 +158,7 @@ void displaySettingsPage() {
         sprintf(timeBuffer, "%02d", nightDuration);
         lcd.print(timeBuffer);
         lcd.print("H");
-    }            
-    
-    previousLightOnTime = lightOnTime;
-    previousLightOffTime = lightOffTime;
-    refreshSettingsPage = false;
-    updateCursor();
+    }
 }
 
 void clearRow(int row) {
