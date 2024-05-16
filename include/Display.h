@@ -1,3 +1,7 @@
+/**
+ * @file Display.h
+*/
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 

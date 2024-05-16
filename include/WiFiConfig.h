@@ -1,3 +1,7 @@
+/**
+ * WiFiConfig.h
+*/
+
 #ifndef WIFICONFIG_H
 #define WIFICONFIG_H
 

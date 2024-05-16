@@ -1,3 +1,7 @@
+/**
+ * @file TimeConfig.h
+*/
+
 #ifndef TIME_CONFIG_H
 #define TIME_CONFIG_H
 

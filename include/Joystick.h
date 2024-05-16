@@ -1,6 +1,5 @@
 /**
  * @file Joystick.h
- * @brief This file contains the declaration of functions related to joystick control.
  */
 
 #ifndef JOYSTICK_H

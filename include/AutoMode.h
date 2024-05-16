@@ -1,3 +1,7 @@
+/**
+ * @file AutoMode.h 
+*/
+
 #ifndef AUTO_MODE_H
 #define AUTO_MODE_H
 
