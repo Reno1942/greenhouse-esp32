@@ -101,7 +101,7 @@ void handleJoystickControl() {
     }        
 }
 
-void handleJoystickClick() {
+void handleJoystickClick() {   
     static unsigned long lastPressTime = 0;
     const unsigned long debounceDelay = 200;
 
@@ -111,26 +111,40 @@ void handleJoystickClick() {
         if (currentTime - lastPressTime > debounceDelay) {            
             lastPressTime = currentTime;
 
-            if (currentPage == HOME_PAGE) {
-                if (currentCursorY == 3) {
-                    toggleAutoMode();
-                }
-            }
-            
-            else if (currentPage == SETTINGS_PAGE) {
-                if (currentCursorY == 0) {
-                    changingLightOnTime = !changingLightOnTime;
-                    changingLightOffTime = false;
-                } else if (currentCursorY == 1) {
-                    changingLightOffTime = !changingLightOffTime;
-                    changingLightOnTime = false;
-                }
-            }
-
-            else if (currentPage == RELAYS_PAGE && !autoMode) {
-                relayFunctions[currentCursorY]();
+            switch (currentPage) {
+                case HOME_PAGE:
+                    handleHomePageClick();
+                    break;
+                case SETTINGS_PAGE:
+                    handleSettingsPageClick();
+                    break;
+                case RELAYS_PAGE:
+                    handleRelaysPageClick();
+                    break;
             }
         }
+    }
+}
+
+void handleHomePageClick() {
+    if (currentCursorY == 3) {
+        toggleAutoMode();
+    }
+}
+
+void handleSettingsPageClick() {
+    if (currentCursorY == 0) {
+        changingLightOnTime = !changingLightOnTime;
+        changingLightOffTime = false;
+    } else if (currentCursorY == 1) {
+        changingLightOffTime = !changingLightOffTime;
+        changingLightOnTime = false;
+    }
+}
+
+void handleRelaysPageClick() {
+    if (!autoMode) {
+        relayFunctions[currentCursorY]();
     }
 }
 

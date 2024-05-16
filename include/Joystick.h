@@ -20,7 +20,12 @@ void moveCursorUp(int joystickY);
 void moveCursorDown(int joystickY);
 void switchPage();
 void handleJoystickControl();
+
 void handleJoystickClick();
+void handleHomePageClick();
+void handleSettingsPageClick();
+void handleRelaysPageClick();
+
 void changeLightTime(int &lightTime, int joystickY);
 void toggleAutoMode();
 
