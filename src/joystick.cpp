@@ -101,7 +101,7 @@ void handleJoystickControl() {
     }        
 }
 
-void handleJoystickClick() {   
+void handleJoystickClick() {
     static unsigned long lastPressTime = 0;
     const unsigned long debounceDelay = 200;
 
