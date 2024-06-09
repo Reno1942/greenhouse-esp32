@@ -5,6 +5,7 @@ bool fanOn = false;
 
 void toggleAutoMode() {
     autoMode = !autoMode; 
+    publishAutoMode(autoMode);
 }
 
 void runAutoMode() {

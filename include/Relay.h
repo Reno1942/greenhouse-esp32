@@ -7,6 +7,7 @@
 
 #include <Arduino.h>
 #include "PinsDefinitions.h"
+#include "MQTTConfig.h"
 
 /**
  * @brief Enumeration representing the state of a relay.
@@ -46,7 +47,7 @@ void setupRelays();
  * @param relayPin The pin number of the relay.
  * @param relayIndex The index of the relay.
  */
-void toggleRelay(byte relayPin, RelayIndex relayIndex);
+void toggleRelay(byte relayPin, RelayIndex relayIndex, RelayState desiredState = RELAY_INIT);
 
 /**
  * @brief Checks if a relay is currently on.

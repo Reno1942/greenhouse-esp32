@@ -149,15 +149,24 @@ void handleRelaysPageClick() {
 }
 
 void changeLightTime(int &lightTime, int joystickY) {
+    bool changed = false;
+
     if (joystickY < joystickCenter - joystickCenterMargin && !joystickMoved) {
         if (lightTime < 23 && (lightTime + 1) != (changingLightOnTime ? lightOffTime : lightOnTime)) {
             lightTime++;            
+            changed = true;
         }
         joystickMoved = true;
     } else if (joystickY > joystickCenter + joystickCenterMargin && !joystickMoved) {
         if (lightTime > 0 && (lightTime - 1) != (changingLightOnTime ? lightOffTime : lightOnTime)) {
-            lightTime--;            
+            lightTime--;   
+            changed = true;         
         }
         joystickMoved = true;
+    }
+
+    if (changed) {
+        const char* topic = changingLightOnTime ? lightOnTimeStateTopic : lightOffTimeStateTopic;
+        publishLightTime(topic, lightTime);
     }
 }

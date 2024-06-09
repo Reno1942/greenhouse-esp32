@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "PinsDefinitions.h"
 #include "Relay.h"
+#include "MQTTConfig.h"
 
 extern int lightOnTime; /**< External declaration of the time when the lights should be turned on. */
 extern int lightOffTime; /**< External declaration of the time when the lights should be turned off. */
@@ -15,6 +16,9 @@ extern float currentTemp; /**< External declaration of the current temperature. 
 extern float currentHumidity; /**< External declaration of the current humidity. */
 extern struct tm timeinfo; /**< External declaration of the current time. */
 extern bool autoMode; /**< External declaration of whether the auto mode is enabled or not. */
+
+extern PubSubClient mqttClient;
+extern const char* autoTopic;
 
 /**
  * @brief Toggles the auto mode on or off.

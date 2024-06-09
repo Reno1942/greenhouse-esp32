@@ -7,6 +7,7 @@
 #include "Sensors.h"
 #include "Relay.h"
 #include "WiFiConfig.h"
+#include "MQTTConfig.h"
 #include "TimeConfig.h"
 
 // Struct storing the pin number of the relays
@@ -73,13 +74,25 @@ const unsigned long timeUpdateDelay = 1000;
 */
 void setup() {
     Serial.begin(115200);  
+    setupWifi();
+    setupMQTT();
     setupRelays();
     setupLCD();
     setupJoystick();
     setupDHT();
-    setupWaterLevelSensor();
-    setupWifi();
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);       
+    setupWaterLevelSensor();    
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);  
+
+    publishLightTime(lightOnTimeStateTopic, lightOnTime);
+    publishLightTime(lightOffTimeStateTopic, lightOffTime); 
+    publishHumidity(currentHumidity);
+    publishTemperature(currentTemp);
+    publishTankLevel(tankLevelPercentage);  
+    publishAutoMode(autoMode);  
+
+    esp_reset_reason_t reason = esp_reset_reason();
+    Serial.print("Reset reason: ");
+    Serial.println(reason);
 }
 
 /**
@@ -89,6 +102,9 @@ void loop() {
     // update current millis
     now = millis();
 
+    // check mqtt messages
+    mqttClient.loop();
+
     // handle joystick 
     handleJoystickControl();
     handleJoystickClick();
@@ -97,6 +113,9 @@ void loop() {
     if (now - lastSensorUpdate >= sensorUpdateDelay) {
         updateDhtReadings();
         updateTankLevelPercentage();
+        publishHumidity(currentHumidity);
+        publishTemperature(currentTemp);
+        publishTankLevel(tankLevelPercentage);
         lastSensorUpdate = now;
     }
 
@@ -106,7 +125,7 @@ void loop() {
     }
 
     // run automode
-    if (autoMode) runAutoMode();    
+    if (autoMode) runAutoMode();
     
     bool isTankEmptyAndPumpOn = tankLevelPercentage == 0 && isRelayOn(relaysPins.pump);
     bool isTankOkAndPumpOff = tankLevelPercentage > 5 && !isRelayOn(relaysPins.pump);
