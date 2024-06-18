@@ -8,6 +8,7 @@
 #include <PubSubClient.h>
 #include <WiFiClient.h>
 #include "Credentials.h"
+#include "Relay.h"
 
 // relay topics
 extern const char* topLightStateTopic;

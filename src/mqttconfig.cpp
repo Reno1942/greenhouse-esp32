@@ -1,33 +1,33 @@
 #include "MQTTConfig.h"
-#include "Relay.h"
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
 // relay topics
-const char* topLightStateTopic = "greenhouse/relays/light/top/state";
-const char* topLightCommandTopic = "greenhouse/relays/light/top/command";
-const char* bottomLightStateTopic = "greenhouse/relays/light/bottom/state";
-const char* bottomLightCommandTopic = "greenhouse/relays/light/bottom/command";
-const char* fanStateTopic = "greenhouse/relays/fan/state";
-const char* fanCommandTopic = "greenhouse/relays/fan/command";
-const char* pumpStateTopic = "greenhouse/relays/pump/state";
-const char* pumpCommandTopic = "greenhouse/relays/pump/command";
+const char* topLightStateTopic = "greenhouse/33/relays/TopLight/state";
+const char* topLightCommandTopic = "greenhouse/33/relays/TopLight/command";
+const char* bottomLightStateTopic = "greenhouse/33/relays/BottomLight/state";
+const char* bottomLightCommandTopic = "greenhouse/33/relays/BottomLight/command";
+const char* fanStateTopic = "greenhouse/33/relays/Fan/state";
+const char* fanCommandTopic = "greenhouse/33/relays/Fan/command";
+const char* pumpStateTopic = "greenhouse/33/relays/Pump/state";
+const char* pumpCommandTopic = "greenhouse/33/relays/Pump/command";
 
 // settings topics
-const char* lightOnTimeStateTopic = "greenhouse/settings/on_time/state";
-const char* lightOnTimeCommandTopic = "greenhouse/settings/on_time/command";
-const char* lightOffTimeStateTopic = "greenhouse/settings/off_time/state";
-const char* lightOffTimeCommandTopic = "greenhouse/settings/off_time/command";
-const char* autoStateTopic = "greenhouse/settings/auto/state";
-const char* autoCommandTopic = "greenhouse/settings/auto/command";
+const char* lightOnTimeStateTopic = "greenhouse/33/settings/LightOnTime/state";
+const char* lightOnTimeCommandTopic = "greenhouse/33/settings/LightOnTime/command";
+const char* lightOffTimeStateTopic = "greenhouse/33/settings/LightOffTime/state";
+const char* lightOffTimeCommandTopic = "greenhouse/33/settings/LightOffTime/command";
+const char* autoStateTopic = "greenhouse/33/settings/AutoMode/state";
+const char* autoCommandTopic = "greenhouse/33/settings/AutoMode/command";
 
 // readings topics
-const char* temperatureTopic = "greenhouse/readings/temperature";
-const char* humidityTopic = "greenhouse/readings/humidity";
-const char* tankLevelTopic = "greennhouse/readings/tank_level";
+const char* temperatureTopic = "greenhouse/33/readings/DHT-11/Temperature";
+const char* humidityTopic = "greenhouse/33/readings/DHT-11/Humidity";
+const char* tankLevelTopic = "greenhouse/33/readings/Ultrasonic/TankLevel";
 
 TopicHandler topicHandlers[] = {
+    // {topLightCommandTopic, [](const char* message) { handleRelayCommand(message, relaysPins.topLight, TopL); }},
     {topLightCommandTopic, handleTopLightCommand},
     {bottomLightCommandTopic, handleBottomLightCommand},
     {fanCommandTopic, handleFanCommand},
@@ -70,7 +70,7 @@ void setupMQTT() {
     Serial.print("Connecting to MQTT broker ");
 
     while (!mqttClient.connected()) {
-        if (mqttClient.connect("ESP32Client")) {
+        if (mqttClient.connect("33")) {
             Serial.println("Connected to MQTT broker"); 
             mqttClient.setCallback(mqttCallback);    
             mqttClient.subscribe(topLightCommandTopic);
@@ -96,15 +96,14 @@ bool publishMessage(const char* topic, const char* message, const char* logMessa
         //Serial.println(published ? String(logMessage) + " published" : String(logMessage) + " publish failed"); 
         return published;       
     } else {
-        Serial.println("MQTT client is not connected");
+        //Serial.println("MQTT client is not connected");
         return false;
     }
 }
 
 void publishLightTime(const char* topic, int time) {
     char message[3];
-    sprintf(message, "%02d", time);
-
+    sprintf(message, "%d", time);
     publishMessage(topic, message, "LightTime");
 }
 
@@ -134,31 +133,67 @@ void publishTankLevel(int level) {
 }
 
 void publishAutoMode(bool state) {
-    const char* message = (state ? "ON" : "OFF");
+    const char* message = (state ? "true" : "false");
     publishMessage(autoStateTopic, message, "AutoMode");
+}
+
+void handleRelayCommand(const char* message, int relayPin, RelayIndex relayIndex) {
+    if (!autoMode) {
+        RelayState relayState;
+        if (strcmp(message, "ON") == 0) {
+            relayState = RELAY_ON;
+        } else if (strcmp(message, "OFF") == 0) {
+            relayState = RELAY_OFF;
+        }
+        toggleRelay(relayPin, relayIndex, relayState);
+    }        
 }
 
 void handleTopLightCommand(const char* message) {
     if (!autoMode) {
-        toggleRelay(relaysPins.topLight, TopL);
+        RelayState relayState;
+        if (strcmp(message, "ON") == 0) {
+            relayState = RELAY_ON;
+        } else if (strcmp(message, "OFF") == 0) {
+            relayState = RELAY_OFF;
+        } 
+        toggleRelay(relaysPins.topLight, TopL, relayState);
     }        
 }
 
 void handleBottomLightCommand(const char* message) {
     if (!autoMode) {
-        toggleRelay(relaysPins.bottomLight, BtmL);
+        RelayState relayState;
+        if (strcmp(message, "ON") == 0) {
+            relayState = RELAY_ON;
+        } else if (strcmp(message, "OFF") == 0) {
+            relayState = RELAY_OFF;
+        }
+        toggleRelay(relaysPins.bottomLight, BtmL, relayState);
     }    
 }
 
 void handleFanCommand(const char* message) {
     if (!autoMode) {
-        toggleRelay(relaysPins.fan, Fan);
+        RelayState relayState;
+        if (strcmp(message, "ON") == 0) {
+            relayState = RELAY_ON;
+        } else if (strcmp(message, "OFF") == 0) {
+            relayState = RELAY_OFF;
+        }
+        toggleRelay(relaysPins.fan, Fan, relayState);
     }    
 }
 
 void handlePumpCommand(const char* message) {
     if (!autoMode) {
-        toggleRelay(relaysPins.pump, Pump);
+        RelayState relayState;
+        if (strcmp(message, "ON") == 0) {
+            relayState = RELAY_ON;
+        } else if (strcmp(message, "OFF") == 0) {
+            relayState = RELAY_OFF;
+        }
+        toggleRelay(relaysPins.pump, Pump, relayState);
     }    
 }
 
