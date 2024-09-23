@@ -42,9 +42,6 @@ extern int lightOnTime;
 extern int lightOffTime;
 extern bool autoMode;
 
-/**
- * @brief Sets up the MQTT server.
- */
 void setupMQTT();
 
 bool publishMessage(const char* topic, const char* message, const char* logMessage);
