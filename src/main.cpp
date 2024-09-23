@@ -95,9 +95,6 @@ void setup() {
     Serial.println(reason);
 }
 
-/**
- * @brief Main function, runs in a permanent loop.
-*/
 void loop() {  
     // update current millis
     now = millis();
