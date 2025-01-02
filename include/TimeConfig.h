@@ -5,4 +5,6 @@
 
 extern struct tm timeinfo;
 
+bool updateTime();
+
 #endif

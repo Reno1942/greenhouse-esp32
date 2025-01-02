@@ -4,6 +4,8 @@
 RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_ON };
 
 void setupRelays() {
+    Serial.println("Setting up relays");
+
     pinMode(relaysPins.topLight, OUTPUT);
     pinMode(relaysPins.bottomLight, OUTPUT);
     pinMode(relaysPins.pump, OUTPUT);
@@ -12,21 +14,22 @@ void setupRelays() {
     toggleRelay(relaysPins.topLight, TopL, RELAY_OFF);
     toggleRelay(relaysPins.bottomLight, BtmL, RELAY_OFF);
     toggleRelay(relaysPins.pump, Pump, RELAY_ON);
-    toggleRelay(relaysPins.fan, Fan, RELAY_OFF);    
+    toggleRelay(relaysPins.fan, Fan, RELAY_OFF);
 }
 
 void toggleRelay(byte relayPin, RelayIndex relayIndex, RelayState desiredState) {    
     RelayState state;
     if (desiredState == RELAY_INIT) {
-        state = static_cast<RelayState>(digitalRead(relayPin));    
+        state = static_cast<RelayState>(digitalRead(relayPin));
         state = (state == RELAY_ON) ? RELAY_OFF : RELAY_ON;
     } else {
         state = desiredState;
-    }           
+    }    
+
     digitalWrite(relayPin, state);    
-    relayState[relayIndex] = state;
+    relayState[relayIndex] = state;    
     
-    const char* stateStr = (state == RELAY_ON ? "ON" : "OFF");    
+    Serial.printf("Relay %d turned %s\n", relayIndex, (state == RELAY_ON ? "ON" : "OFF"));        
 }
 
 bool isRelayOn(byte relayPin){

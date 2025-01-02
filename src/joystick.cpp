@@ -11,6 +11,8 @@ Page currentPage = HOME_PAGE;
 extern FunctionPointer relayFunctions[];
 
 void setupJoystick() {
+    Serial.println("Setting up joystick");
+
     pinMode(joystickPins.SW, INPUT_PULLUP);
     pinMode(joystickPins.VRx, INPUT);
     pinMode(joystickPins.VRy, INPUT);

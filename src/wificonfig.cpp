@@ -1,6 +1,6 @@
 #include "WiFiConfig.h"
 
-void setupWifi() {
+void connectWifi() {
     const unsigned long wifiTimeout = 30000;
     unsigned long startTime = millis();
 
@@ -17,5 +17,5 @@ void setupWifi() {
         Serial.print(".");
     }
 
-    Serial.println("Connected to WiFi");
+    Serial.println("Connected to WiFi");    
 }

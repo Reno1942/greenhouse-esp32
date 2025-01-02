@@ -21,6 +21,8 @@ float previousTemp = -1;
 float previousHumidity = -1;
 
 void setupLCD() {
+    Serial.println("Setting up LCD");
+    
     Wire.begin(lcdPins.sda, lcdPins.scl);
     lcd.begin(lcdValues.cols, lcdValues.rows);
     lcd.backlight();   
@@ -84,11 +86,14 @@ void displayMode() {
     } 
 }
 
-void displayRelaysPage() {
-    String relayNames[4] = { "X   TopL", "X   BtmL", "X   Fan", "X   Pump" };
-    size_t relayCount = sizeof(relayNames) / sizeof(relayNames[0]);
+void displayRelaysPage() {    
+    if (refreshRelaysPage) {
+        Serial.println("refreshRelaysPage == true");
+    }
 
-    for (size_t i = 0; i < relayCount; i++)
+    String relayNames[4] = { "X   TopL", "X   BtmL", "X   Fan", "X   Pump" };    
+
+    for (size_t i = 0; i < 4; i++)
     {
         if (refreshRelaysPage || previousRelayState[i] != relayState[i]) {
             clearRow(i);
@@ -97,10 +102,10 @@ void displayRelaysPage() {
             lcd.setCursor(9, i);
             lcd.print(": ");
             lcd.print(relayState[i] == RELAY_ON ? "On" : "Off");
-            previousRelayState[i] = relayState[i]; 
+            previousRelayState[i] = relayState[i];
         }
     }  
-    refreshRelaysPage = false;    
+    refreshRelaysPage = false;
     updateCursor();     
 }
 

@@ -6,6 +6,6 @@
 
 extern WiFiClass WiFi;
 
-void setupWifi();
+void connectWifi();
 
 #endif

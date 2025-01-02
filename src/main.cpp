@@ -62,31 +62,39 @@ unsigned long lastPumpOffTime = 0;
 // Delay before the pump can be turned on again in milliseconds
 const unsigned long pumpOffDelay = 60000;
 
-// Timestamp of the last time update
+// Timestamp of the last time the time was updated
 unsigned long lastTimeUpdate = 0;
 
 // Delay between time updates in milliseconds
-const unsigned long timeUpdateDelay = 1000;
+const unsigned long timeUpdateDelay = 3600000;
 
 /**
  * @brief Sets up all the components to their initial states.
 */
 void setup() {
-    Serial.begin(115200);  
-    setupWifi();    
-    setupRelays();
-    setupLCD();
-    setupJoystick();
-    setupDHT();
-    setupWaterLevelSensor();    
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);      
+    // init serial comm
+    Serial.begin(115200);
 
-    esp_reset_reason_t reason = esp_reset_reason();
+    // print the reason for the esp reset
+    esp_reset_reason_t reason = esp_reset_reason();    
     Serial.print("Reset reason: ");
     Serial.println(reason);
+
+    // setup the components
+    connectWifi();    
+    setupRelays();
+    setupLCD();
+    setupJoystick();    
+    setupDHT();    
+    setupWaterLevelSensor();    
+
+    // config the time
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+    updateTime();    
+    Serial.println("Setup done");
 }
 
-void loop() {  
+void loop() {    
     // update current millis
     now = millis();    
 
@@ -103,7 +111,8 @@ void loop() {
 
     // update time
     if (now - lastTimeUpdate >= timeUpdateDelay) {
-        getLocalTime(&timeinfo, 1000);
+        updateTime();
+        lastTimeUpdate = now;
     }
 
     // run automode

@@ -7,12 +7,15 @@ const int minWaterDistance = 5;
 const int maxWaterDistance = 37;
 
 void setupDHT() {
+    Serial.println("Setting up DHT");
+
     dht.begin();
     currentTemp = readTemperature();
     currentHumidity = readHumidity();
 }
 
 void setupWaterLevelSensor() {
+    Serial.println("Setting up WL Sensor");
     pinMode(sensorsPins.waterLevel, INPUT_PULLUP);
 }
 
