@@ -28,10 +28,10 @@ struct tm timeinfo;
 const char* ntpServer = "pool.ntp.org";
 
 // offset of the current timezone compared to gmt
-const long gmtOffset_sec = -14400;
+const long gmtOffset_sec = -18000;
 
 // daylight savings offset
-const int daylightOffset_sec = 0;
+const int daylightOffset_sec = 3600;
 
 // hour chosen to turn on lights
 int lightOnTime = 6;
@@ -75,7 +75,7 @@ const unsigned long timeUpdateDelay = 1000;
 void setup() {
     Serial.begin(115200);  
     setupWifi();
-    setupMQTT();
+    //setupMQTT();
     setupRelays();
     setupLCD();
     setupJoystick();
@@ -83,12 +83,12 @@ void setup() {
     setupWaterLevelSensor();    
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);  
 
-    publishLightTime(lightOnTimeStateTopic, lightOnTime);
-    publishLightTime(lightOffTimeStateTopic, lightOffTime); 
-    publishHumidity(currentHumidity);
-    publishTemperature(currentTemp);
-    publishTankLevel(tankLevelPercentage);  
-    publishAutoMode(autoMode);  
+    // publishLightTime(lightOnTimeStateTopic, lightOnTime);
+    // publishLightTime(lightOffTimeStateTopic, lightOffTime); 
+    // publishHumidity(currentHumidity);
+    // publishTemperature(currentTemp);
+    // publishTankLevel(tankLevelPercentage);  
+    // publishAutoMode(autoMode);
 
     esp_reset_reason_t reason = esp_reset_reason();
     Serial.print("Reset reason: ");

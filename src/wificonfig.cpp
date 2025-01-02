@@ -1,7 +1,7 @@
 #include "WiFiConfig.h"
 
 void setupWifi() {
-    const unsigned long wifiTimeout = 10000;
+    const unsigned long wifiTimeout = 45000;
     unsigned long startTime = millis();
 
     WiFi.begin(WIFI_SSID, WIFI_PWD);

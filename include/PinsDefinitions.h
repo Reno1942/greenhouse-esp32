@@ -5,7 +5,7 @@
 
 struct RelaysPins
 {
-    const byte topLight = 10;    
+    const byte topLight = 10;
     const byte bottomLight = 11;
     const byte fan = 2;
     const byte pump = 3;
