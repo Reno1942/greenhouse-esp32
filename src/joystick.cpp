@@ -163,10 +163,5 @@ void changeLightTime(int &lightTime, int joystickY) {
             changed = true;         
         }
         joystickMoved = true;
-    }
-
-    if (changed) {
-        const char* topic = changingLightOnTime ? lightOnTimeStateTopic : lightOffTimeStateTopic;
-        publishLightTime(topic, lightTime);
-    }
+    }    
 }

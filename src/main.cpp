@@ -7,7 +7,6 @@
 #include "Sensors.h"
 #include "Relay.h"
 #include "WiFiConfig.h"
-#include "MQTTConfig.h"
 #include "TimeConfig.h"
 
 // Struct storing the pin number of the relays
@@ -74,21 +73,13 @@ const unsigned long timeUpdateDelay = 1000;
 */
 void setup() {
     Serial.begin(115200);  
-    setupWifi();
-    //setupMQTT();
+    setupWifi();    
     setupRelays();
     setupLCD();
     setupJoystick();
     setupDHT();
     setupWaterLevelSensor();    
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);  
-
-    // publishLightTime(lightOnTimeStateTopic, lightOnTime);
-    // publishLightTime(lightOffTimeStateTopic, lightOffTime); 
-    // publishHumidity(currentHumidity);
-    // publishTemperature(currentTemp);
-    // publishTankLevel(tankLevelPercentage);  
-    // publishAutoMode(autoMode);
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);      
 
     esp_reset_reason_t reason = esp_reset_reason();
     Serial.print("Reset reason: ");
@@ -97,10 +88,7 @@ void setup() {
 
 void loop() {  
     // update current millis
-    now = millis();
-
-    // check mqtt messages
-    mqttClient.loop();
+    now = millis();    
 
     // handle joystick 
     handleJoystickControl();
@@ -109,10 +97,7 @@ void loop() {
     // update dht and ultrasonic readings
     if (now - lastSensorUpdate >= sensorUpdateDelay) {
         updateDhtReadings();
-        updateTankLevelPercentage();
-        publishHumidity(currentHumidity);
-        publishTemperature(currentTemp);
-        publishTankLevel(tankLevelPercentage);
+        updateTankLevelPercentage();        
         lastSensorUpdate = now;
     }
 
@@ -137,5 +122,5 @@ void loop() {
     if (isSensorReached() && isRelayOn(relaysPins.pump)) {
         togglePump();
         lastPumpOffTime = now;
-    }        
+    }
 }

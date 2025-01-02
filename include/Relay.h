@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include "PinsDefinitions.h"
-#include "MQTTConfig.h"
 
 enum RelayState : byte 
 {

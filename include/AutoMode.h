@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include "PinsDefinitions.h"
 #include "Relay.h"
-#include "MQTTConfig.h"
 
 extern int lightOnTime;
 extern int lightOffTime;
@@ -12,9 +11,6 @@ extern float currentTemp;
 extern float currentHumidity;
 extern struct tm timeinfo;
 extern bool autoMode;
-
-extern PubSubClient mqttClient;
-extern const char* autoTopic;
 
 void toggleAutoMode();
 

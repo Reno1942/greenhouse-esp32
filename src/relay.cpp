@@ -3,9 +3,6 @@
 // Initial states of the relays
 RelayState relayState[4] = { RELAY_OFF, RELAY_OFF, RELAY_OFF, RELAY_ON };
 
-// Array of topics 
-const char* relayTopics[] = {topLightStateTopic, bottomLightStateTopic, fanStateTopic, pumpStateTopic};
-
 void setupRelays() {
     pinMode(relaysPins.topLight, OUTPUT);
     pinMode(relaysPins.bottomLight, OUTPUT);
@@ -28,10 +25,8 @@ void toggleRelay(byte relayPin, RelayIndex relayIndex, RelayState desiredState) 
     }           
     digitalWrite(relayPin, state);    
     relayState[relayIndex] = state;
-
-    const char* topic = relayTopics[relayIndex];
-    const char* stateStr = (state == RELAY_ON ? "ON" : "OFF");
-    publishRelayState(topic, stateStr);
+    
+    const char* stateStr = (state == RELAY_ON ? "ON" : "OFF");    
 }
 
 bool isRelayOn(byte relayPin){
