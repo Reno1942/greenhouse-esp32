@@ -20,7 +20,7 @@ JoystickPins joystickPins;
 
 bool autoMode = true;
 
-// struct storing the time
+// struct storing the time for displaying
 struct tm timeinfo;
 
 // address of the ntp server used to synchronize the time
@@ -62,15 +62,12 @@ unsigned long lastPumpOffTime = 0;
 // Delay before the pump can be turned on again in milliseconds
 const unsigned long pumpOffDelay = 60000;
 
-// Timestamp of the last time the time was updated
-unsigned long lastTimeUpdate = 0;
+// Timestamp of the last time the timeinfo was synced with NTP
+unsigned long lastNtpSync = 0;
 
-// Delay between time updates in milliseconds
-const unsigned long timeUpdateDelay = 3600000;
+// Delay between NTP syncs in milliseconds
+const unsigned long ntpSyncDelay = 3600000;
 
-/**
- * @brief Sets up all the components to their initial states.
-*/
 void setup() {
     // init serial comm
     Serial.begin(115200);
@@ -109,10 +106,10 @@ void loop() {
         lastSensorUpdate = now;
     }
 
-    // update time
-    if (now - lastTimeUpdate >= timeUpdateDelay) {
+    // sync time with ntp
+    if (now - lastNtpSync >= ntpSyncDelay) {
         updateTime();
-        lastTimeUpdate = now;
+        lastNtpSync = now;
     }
 
     // run automode

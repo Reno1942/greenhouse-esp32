@@ -23,8 +23,14 @@ float previousHumidity = -1;
 void setupLCD() {
     Serial.println("Setting up LCD");
     
-    Wire.begin(lcdPins.sda, lcdPins.scl);
-    lcd.begin(lcdValues.cols, lcdValues.rows);
+    Wire.begin(lcdPins.sda, lcdPins.scl);    
+    int lcdInit = lcd.begin(lcdValues.cols, lcdValues.rows);
+
+    if (lcdInit != 0) {
+        Serial.println("Error while setting up LCD");
+        return;
+    }
+    
     lcd.backlight();   
     lcd.blink();         
 }
@@ -54,6 +60,9 @@ void displayTempAndHumidity() {
 
 void displayTime() {
     char timeBuffer[17];
+    time_t now = time(nullptr);
+    localtime_r(&now, &timeinfo);
+    
     if (timeinfo.tm_year > (1970 - 1900)) {
         strftime(timeBuffer, sizeof(timeBuffer), "%Y/%m/%d %H:%M", &timeinfo);
     } else {
