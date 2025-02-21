@@ -24,8 +24,8 @@
 | 20 | Bottom Light Relay |
 | 0 | DHT-11 |
 | 1 | Water Level Sensor |
-| 16 | Echo (HC-SR04) |
-| 17 | Trig (HC-SR04) |
+| 12 | Trig (HC-SR04) |
+| 13 | Echo (HC-SR04) |
 | 4 | VRx (Joystick) |
 | 5 | VRy (Joystick) |
 | 3 | SW (Joystick) |
