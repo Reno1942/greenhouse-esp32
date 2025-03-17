@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+Logger* Logger::_instance = nullptr;
+
 Logger::Logger() {
     _destination = TERMINAL;
     _enabled = true;
