@@ -23,7 +23,7 @@ class Display {
 private:
     LCDValues _lcdValues;
     LCDPins _lcdPins;
-    hd44780_I2Cexp _lcd;        
+    hd44780_I2Cexp _lcd;
 
 public:
     Display();

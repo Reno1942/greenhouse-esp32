@@ -29,6 +29,8 @@ bool Display::setup() {
         _lcd.blink();        
         return true;
     }
+
+    return false;
 }
 
 void Display::clearRow(int row) {
