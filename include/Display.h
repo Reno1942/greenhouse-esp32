@@ -8,7 +8,7 @@
 
 // Struct to hold LCD configuration values
 struct LCDValues {
-    uint8_t address;
+    int address;
     uint8_t cols;  
     uint8_t rows;    
 };

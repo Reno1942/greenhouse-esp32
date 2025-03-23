@@ -14,29 +14,23 @@ Display::Display() :
 {}
 
 bool Display::setup() {
-    Wire.begin(_lcdPins.sda, _lcdPins.scl);
+    bool wireInitStatus = Wire.begin(_lcdPins.sda, _lcdPins.scl);
+    if (!wireInitStatus) {
+        Logger::getLogger()->log(ERROR, "LCD: Wire did not initialize correctly");
+        return false;
+    }
+    Logger::getLogger()->log(INFO, "LCD: Wire initialized successfully");
 
     int lcdInitStatus = _lcd.begin(_lcdValues.cols, _lcdValues.rows);
-
-    if (lcdInitStatus != 0) {
-        Logger::getLogger()->log(INFO, "Setting up display");
-
-        bool wireInitStatus = Wire.begin(_lcdPins.sda, _lcdPins.scl);        
-        if (!wireInitStatus) {
-            Logger::getLogger()->log(ERROR, "LCD: Wire did not initialize correctly");
-            return false;
-        }
-
-        int lcdInitStatus = _lcd.begin(_lcdValues.cols, _lcdValues.rows);
-        if (lcdInitStatus != 0) {
-            Logger::getLogger()->log(ERROR, "LCD did not initialize correctly.");
-            return false;
-        }
+    if (lcdInitStatus == 0) {
+        Logger::getLogger()->log(INFO, "LCD: Setting up");        
         _lcd.backlight();
-        _lcd.blink();        
+        _lcd.blink();
+        Logger::getLogger()->log(INFO, "LCD: Initialized successfully");        
         return true;
     }
 
+    Logger::getLogger()->log(ERROR, "LCD: Did not initialize correctly");
     return false;
 }
 
