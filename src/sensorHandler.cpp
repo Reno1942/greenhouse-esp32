@@ -12,17 +12,17 @@ SensorHandler::SensorHandler() :
 {}
 
 void SensorHandler::setupDHT() {
-    Logger::getLogger()->log(INFO, "Setting up DHT sensor");
+    Logger::getLogger()->log(INFO, "DHT: Setting up");
     _dht.begin();
 }
 
 void SensorHandler::setupWaterLevel() {
-    Logger::getLogger()->log(INFO, "Setting up water level sensor");
+    Logger::getLogger()->log(INFO, "WL Sensor: Setting up");
     pinMode(_sensorPins.waterLevel, INPUT_PULLUP);
 }
 
 void SensorHandler::setupUltrasonic() {
-    Logger::getLogger()->log(INFO, "Setting up ultrasonic sensor");
+    Logger::getLogger()->log(INFO, "Ultrasonic: Setting up");
 }
 
 float SensorHandler::readTemperature() {

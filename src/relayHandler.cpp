@@ -10,7 +10,7 @@ RelayHandler::RelayHandler() :
 {}
 
 void RelayHandler::setupRelays() {
-    Logger::getLogger()->log(INFO, "Setting up relays");
+    Logger::getLogger()->log(INFO, "Relays : Setting up");
 
     pinMode(_relayPins.topLight, OUTPUT);
     pinMode(_relayPins.bottomLight, OUTPUT);
@@ -20,7 +20,9 @@ void RelayHandler::setupRelays() {
     digitalWrite(_relayPins.topLight, RELAY_OFF);
     digitalWrite(_relayPins.bottomLight, RELAY_OFF);
     digitalWrite(_relayPins.fan, RELAY_OFF);
-    digitalWrite(_relayPins.pump, RELAY_ON);    
+    digitalWrite(_relayPins.pump, RELAY_ON);
+
+    Logger::getLogger()->log(INFO, "Relays : Initialized successfully");
 }
 
 void RelayHandler::toggleRelay(uint8_t relayPin) {
