@@ -1,8 +1,15 @@
 #include "Display.h"
 
 Display::Display() :
-    _lcdValues{0x27, 20, 4},
-    _lcdPins{10, 11},
+    _lcdValues{
+        .address = 0x27,
+        .cols = 20,
+        .rows = 4
+    },
+    _lcdPins{
+        .sda = 10,
+        .scl = 11
+    },
     _lcd(_lcdValues.address)
 {}
 

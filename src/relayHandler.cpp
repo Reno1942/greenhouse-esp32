@@ -1,7 +1,12 @@
 #include "RelayHandler.h"
 
 RelayHandler::RelayHandler() :
-    _relayPins{21, 20, 23, 22}
+    _relayPins{
+        .topLight = 21,
+        .bottomLight = 20,
+        .fan = 23,
+        .pump = 22
+    }
 {}
 
 void RelayHandler::setupRelays() {

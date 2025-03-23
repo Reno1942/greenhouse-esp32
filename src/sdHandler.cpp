@@ -1,7 +1,12 @@
 #include "SDHandler.h"
 
 SDHandler::SDHandler() :
-    _sdPins{18, 7, 2, 6}    
+    _sdPins{
+        .cs = 18,
+        .miso = 7, 
+        .mosi = 2, 
+        .sck = 6
+    }    
 {}
 
 bool SDHandler::setupSDCard() {

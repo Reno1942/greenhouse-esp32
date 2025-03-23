@@ -1,7 +1,12 @@
 #include "SensorHandler.h"
 
 SensorHandler::SensorHandler() :
-    _sensorPins{1, 12, 13, 0},
+    _sensorPins{
+        .waterLevel = 1,
+        .ultrasonicTrig = 12, 
+        .ultrasonicEcho = 13, 
+        .dht = 0
+    },
     _dht(_sensorPins.dht, 11),
     _ultrasonic(_sensorPins.ultrasonicTrig, _sensorPins.ultrasonicEcho)
 {}
