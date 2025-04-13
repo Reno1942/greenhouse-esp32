@@ -5,20 +5,29 @@
 #include "RelayHandler.h"
 #include "SensorHandler.h"
 #include "WifiHandler.h"
+#include "TimeHandler.h"
 
+// objects
 SDHandler sdHandler;
 Display display;
 RelayHandler relayHandler;
 Settings settings;
 SensorHandler sensorHandler;
 WifiHandler wifiHandler;
+TimeHandler timeHandler;
+
+// global variables
+struct tm currentTime;
+bool wifiConnected;
+bool mqttConnected;
 
 void setup() {
     Serial.begin(115200);
     
+    // CURRENTLY NOT WORKING
     // read settings from sd    
-    sdHandler.setupSDCard();
-    sdHandler.loadSettings(settings);
+    // sdHandler.setupSDCard();    
+    // sdHandler.loadSettings(settings);
 
     // start physical components
     display.setup();
@@ -28,10 +37,12 @@ void setup() {
     sensorHandler.setupUltrasonic();
 
     // connect to wifi
-    wifiHandler.connectWifi();
+    wifiConnected = wifiHandler.connectWifi();
 
     // sync time
-
+    if (wifiConnected) {
+        timeHandler.syncTime(&currentTime);
+    }
     // connect mqtt
 }
 

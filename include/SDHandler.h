@@ -22,13 +22,13 @@ struct Settings {
 class SDHandler {
 private:
     SDPins _sdPins;    
-    char* settingsFilePath;
-    char* logsFilePath;    
+    const char* settingsFilePath;
+    const char* logsFilePath;    
 public:
     SDHandler();
 
     bool setupSDCard();
-    String loadSettings(Settings& settings);
+    void loadSettings(Settings& settings);
     bool saveSettings(const Settings& settings);
     bool writeLog(String message);    
 };
