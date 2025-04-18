@@ -12,6 +12,5 @@ void Joystick::setup() {
     Logger::getLogger()->log(INFO, "Joystick: Setting up");
     pinMode(_joystickPins.sw, INPUT_PULLUP);
     pinMode(_joystickPins.vrX, INPUT);
-    pinMode(_joystickPins.vrY, INPUT);
-    Logger::getLogger()->log(INFO, "Joystick: Set up successfully");
+    pinMode(_joystickPins.vrY, INPUT);    
 }
