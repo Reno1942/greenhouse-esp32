@@ -12,7 +12,7 @@ private:
 
 public:
     TimeHandler();
-    bool syncTime(tm *timeinfo);        
+    bool syncTime();        
 };
 
 #endif

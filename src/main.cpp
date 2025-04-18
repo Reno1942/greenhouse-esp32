@@ -6,6 +6,7 @@
 #include "SensorHandler.h"
 #include "WifiHandler.h"
 #include "TimeHandler.h"
+#include "Joystick.h"
 
 // objects
 SDHandler sdHandler;
@@ -15,15 +16,13 @@ Settings settings;
 SensorHandler sensorHandler;
 WifiHandler wifiHandler;
 TimeHandler timeHandler;
+Joystick joystick;
 
 // global variables
-struct tm currentTime;
 bool wifiConnected;
-bool mqttConnected;
 
 void setup() {
-    Serial.begin(115200);
-    
+    Serial.begin(115200);    
     // CURRENTLY NOT WORKING
     // read settings from sd    
     // sdHandler.setupSDCard();    
@@ -35,18 +34,21 @@ void setup() {
     sensorHandler.setupDHT();
     sensorHandler.setupWaterLevel();
     sensorHandler.setupUltrasonic();
+    joystick.setup();
 
     // connect to wifi
     wifiConnected = wifiHandler.connectWifi();
 
-    // sync time
-    if (wifiConnected) {
-        timeHandler.syncTime(&currentTime);
-    }
+    // // sync time
+    // if (wifiConnected) {
+        
+    // }
     // connect mqtt
 }
 
-void loop() {
+void loop() {    
+    Serial.println("Looping...");
+    delay(1000);
     // CONTROLS
     // handle joystick controls    
 

@@ -1,8 +1,8 @@
-#ifndef JOYSTICK_HANDLER_H
-#define JOYSTICK_HANDLER_H
+#ifndef JOYSTICK_H
+#define JOYSTICK_H
 
 #include <Arduino.h>
-
+#include "Logger.h"
 
 struct JoystickPins {
     uint8_t vrX;
@@ -10,12 +10,14 @@ struct JoystickPins {
     uint8_t sw;
 };
 
-class JoystickHandler {
+class Joystick {
 private:
     JoystickPins _joystickPins;
     
 public:
-    JoystickHandler();
+    Joystick();
+
+    void setup();
 };
 
 #endif

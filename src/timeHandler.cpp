@@ -5,12 +5,10 @@ TimeHandler::TimeHandler() :
     gmtOffset(-18000),
     daylightOffset(3600)
 {
-    configTime(gmtOffset, daylightOffset, ntpServer);
+    // this causes an issue where the program will hang on object creation
+    // configTime(gmtOffset, daylightOffset, ntpServer);
 }
 
-bool TimeHandler::syncTime(tm *timeinfo) {
-    if (!getLocalTime(&timeinfo)) {
-        Logger::getLogger()->log(ERROR, "Time: Failed to obtain time");
-        return false;
-    }
+bool TimeHandler::syncTime() {
+    return false;
 }
