@@ -7,19 +7,24 @@
 #include "WifiHandler.h"
 #include "TimeHandler.h"
 #include "Joystick.h"
+#include "DisplayData.h"
 
-// objects
+// OBJECTS
 SDHandler sdHandler;
-Display display;
+DisplayData displayData;
 RelayHandler relayHandler;
 Settings settings;
 SensorHandler sensorHandler;
 WifiHandler wifiHandler;
 TimeHandler timeHandler;
-Joystick joystick;
+Display display(displayData);
+Joystick joystick(display);
 
-// global variables
+// VARIABLES
 bool wifiConnected;
+unsigned long currentTime = 0;
+unsigned long lastDisplayDataUpdate = 0;
+unsigned long displayDataUpdateDelay = 2000; 
 
 void setup() {
     Serial.begin(115200);    
@@ -28,12 +33,11 @@ void setup() {
     // sdHandler.setupSDCard();    
     // sdHandler.loadSettings(settings);
 
-    // start physical components
-    display.setup();
+    // start physical components    
     relayHandler.setupRelays();
     sensorHandler.setupDHT();
-    sensorHandler.setupWaterLevel();
-    sensorHandler.setupUltrasonic();
+    sensorHandler.setupWaterLevel();    
+    display.setup();
     joystick.setup();
 
     // connect to wifi
@@ -47,23 +51,36 @@ void setup() {
 }
 
 void loop() {    
-    Serial.println("Looping...");
-    delay(1000);
+    currentTime = millis();
+
     // CONTROLS
     // handle joystick controls    
+    joystick.handleJoystickMovement();    
+
+    // update display data
+    if (currentTime - lastDisplayDataUpdate > displayDataUpdateDelay) {
+        displayData.humidity = sensorHandler.readHumidity();
+        displayData.temperature = sensorHandler.readTemperature();
+        displayData.autoMode = true;
+        displayData.tankLevelPercentage = sensorHandler.readTankPercentage();
+        lastDisplayDataUpdate = currentTime;
+    }
+
+    // display correct page
+    switch(display.getCurrentPage()) {
+        case HOME_PAGE:
+            display.displayHomePage();
+            break;
+    }
 
     // run automode    
 
     // SAFEGUARDS 
     // gutter water level
-    // tank water level
-
-    // UPDATES
-    // update sensors readings    
+    // tank water level                
 
     // sync the time
 
-    // COMMUNICATION
     // send mqtt states
     // handle mqtt commands
 }

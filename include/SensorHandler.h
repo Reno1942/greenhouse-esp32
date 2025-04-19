@@ -19,15 +19,18 @@ private:
     SensorsPins _sensorPins;    
     DHT_Unified _dht; 
     Ultrasonic _ultrasonic;
+
+    const int _minWaterDistance = 5;
+    const int _maxWaterDistance = 30;
 public:
     SensorHandler();
 
-    void setupWaterLevel();
-    void setupUltrasonic();
+    void setupWaterLevel();    
     void setupDHT();
     float readTemperature();
     float readHumidity();
     bool wlSensorReached();
+    int readTankPercentage();
 };
 
 #endif

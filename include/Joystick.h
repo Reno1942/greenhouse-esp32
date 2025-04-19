@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "Logger.h"
+#include "Display.h"
 
 struct JoystickPins {
     uint8_t vrX;
@@ -13,11 +14,18 @@ struct JoystickPins {
 class Joystick {
 private:
     JoystickPins _joystickPins;
-    
+    Display& _display;
+
 public:
-    Joystick();
+    Joystick(Display& display);
 
     void setup();
+
+    // Handles the joystick movement
+    void handleJoystickMovement();
+
+    // Moves the cursor on the screen depending on the joystick position
+    void moveCursor(int joystickY);    
 };
 
 #endif

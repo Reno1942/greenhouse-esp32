@@ -21,10 +21,6 @@ void SensorHandler::setupWaterLevel() {
     pinMode(_sensorPins.waterLevel, INPUT_PULLUP);
 }
 
-void SensorHandler::setupUltrasonic() {
-    Logger::getLogger()->log(INFO, "Ultrasonic: Setting up");
-}
-
 float SensorHandler::readTemperature() {
     sensors_event_t event;
     _dht.temperature().getEvent(&event);
@@ -35,6 +31,20 @@ float SensorHandler::readHumidity() {
     sensors_event_t event;
     _dht.humidity().getEvent(&event);
     return event.relative_humidity;
+}
+
+int SensorHandler::readTankPercentage() {
+    int distanceCM = _ultrasonic.read();
+    int tankLevelPercentage = 0;
+
+    if (distanceCM <= _minWaterDistance) {
+        tankLevelPercentage = 100;
+    }
+    else if (distanceCM <= _maxWaterDistance) {
+        tankLevelPercentage = ((_maxWaterDistance - distanceCM) / (float)(_maxWaterDistance - _minWaterDistance)) * 100;
+    }
+
+    return tankLevelPercentage;
 }
 
 bool SensorHandler::wlSensorReached() {
