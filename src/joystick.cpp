@@ -42,7 +42,7 @@ void Joystick::moveCursor(int joystickY) {
         if (currentCursorY > 0) {
             _display.setCurrentCursorY(currentCursorY - 1);
         } else {
-            // previous page
+            _display.changePage(false);
         }
     }
     else if (joystickY > joystickCenter + joystickCenterMargin) {               
@@ -50,7 +50,7 @@ void Joystick::moveCursor(int joystickY) {
         if (currentCursorY < 3) {
             _display.setCurrentCursorY(currentCursorY + 1);
         } else {
-            // next page
+            _display.changePage(true);
         }
         
     }    

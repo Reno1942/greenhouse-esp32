@@ -6,26 +6,25 @@
 
 enum RelayState : uint8_t {
     RELAY_OFF = 1,
-    RELAY_ON = 0,
-    RELAY_INIT = 2
+    RELAY_ON = 0    
 };
 
-struct RelayPins {
-    uint8_t topLight;
-    uint8_t bottomLight;
-    uint8_t fan;
-    uint8_t pump;    
+struct Relay {
+    String displayName;
+    uint8_t pin;
+    RelayState state;
 };
 
 class RelayHandler {
 private:
-    RelayPins _relayPins;
+    Relay _relays[4];
 
 public:    
     RelayHandler();
 
     void setupRelays();
-    void toggleRelay(uint8_t);
+    void toggleRelay(uint8_t relayIndex);
+    Relay getRelay(uint8_t relayIndex);    
 };
 
 #endif

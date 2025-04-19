@@ -24,11 +24,10 @@ Joystick joystick(display);
 bool wifiConnected;
 unsigned long currentTime = 0;
 unsigned long lastDisplayDataUpdate = 0;
-unsigned long displayDataUpdateDelay = 2000; 
+unsigned long displayDataUpdateDelay = 2000;
 
 void setup() {
-    Serial.begin(115200);    
-    // CURRENTLY NOT WORKING
+    Serial.begin(115200);
     // read settings from sd    
     // sdHandler.setupSDCard();    
     // sdHandler.loadSettings(settings);
@@ -43,7 +42,7 @@ void setup() {
     // connect to wifi
     wifiConnected = wifiHandler.connectWifi();
 
-    // // sync time
+    // sync time
     // if (wifiConnected) {
         
     // }
@@ -52,26 +51,37 @@ void setup() {
 
 void loop() {    
     currentTime = millis();
-
-    // CONTROLS
+    
     // handle joystick controls    
     joystick.handleJoystickMovement();    
-
-    // update display data
-    if (currentTime - lastDisplayDataUpdate > displayDataUpdateDelay) {
-        displayData.humidity = sensorHandler.readHumidity();
-        displayData.temperature = sensorHandler.readTemperature();
-        displayData.autoMode = true;
-        displayData.tankLevelPercentage = sensorHandler.readTankPercentage();
-        lastDisplayDataUpdate = currentTime;
-    }
 
     // display correct page
     switch(display.getCurrentPage()) {
         case HOME_PAGE:
-            display.displayHomePage();
+            display.displayHomePage(false);
+            break;
+        case RELAYS_PAGE:
+            display.displayRelaysPage(false);
+            break;
+        case SETTINGS_PAGE:
+            display.displaySettingsPage(false);
             break;
     }
+
+    // update display data
+    if (currentTime - lastDisplayDataUpdate > displayDataUpdateDelay) {
+        displayData.humidity = sensorHandler.readHumidity();
+        displayData.temperature = sensorHandler.readTemperature();        
+        displayData.tankLevelPercentage = sensorHandler.readTankPercentage();
+        displayData.isAutoModeOn = true;
+
+        for (size_t i = 0; i < 4; i++)
+        {
+            displayData.relays[i] = relayHandler.getRelay(i);
+        }
+        
+        lastDisplayDataUpdate = currentTime;
+    }    
 
     // run automode    
 

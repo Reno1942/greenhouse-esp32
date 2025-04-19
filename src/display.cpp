@@ -20,8 +20,7 @@ bool Display::setup() {
     if (lcdInitStatus == 0) {
         Logger::getLogger()->log(INFO, "LCD: Setting up");        
         _lcd.backlight();
-        _lcd.blink();
-        displayHomePage();
+        _lcd.blink();        
         Logger::getLogger()->log(INFO, "LCD: Initialized successfully");                
         return true;
     }
@@ -39,9 +38,9 @@ uint8_t Display::getCurrentCursorY() {
     return _currentCursorY;
 }
 
-void Display::displayHomePage() {    
+void Display::displayHomePage(bool refresh) {    
     // temp and humidity
-    if (_previousHumidity != _displayData.humidity || _previousTemperature != _displayData.temperature) {
+    if (_previousHumidity != _displayData.humidity || _previousTemperature != _displayData.temperature || refresh) {
         clearRow(0);
         _lcd.setCursor(0,0);
         _lcd.print("Temp:");    
@@ -55,7 +54,7 @@ void Display::displayHomePage() {
     }
 
     // tank level
-    if (_previousTankPercentage != _displayData.tankLevelPercentage) {
+    if (_previousTankPercentage != _displayData.tankLevelPercentage || refresh) {
         clearRow(2);
         _lcd.setCursor(4,2);
         _lcd.print("Tank : ");
@@ -67,15 +66,64 @@ void Display::displayHomePage() {
     
 
     // mode    
-    if (_previousAutomode != _displayData.autoMode) {
+    if (_previousAutomode != _displayData.isAutoModeOn || refresh) {
         clearRow(3);
         _lcd.setCursor(0,3);
-        _lcd.print(_displayData.autoMode ? "X   Mode : Auto" : "X   Mode : Manual");
+        _lcd.print(_displayData.isAutoModeOn ? "X   Mode : Auto" : "X   Mode : Manual");
 
-        _previousAutomode = _displayData.autoMode;
+        _previousAutomode = _displayData.isAutoModeOn;
     }
     
     resetCursor();
+}
+
+
+void Display::displayRelaysPage(bool refresh) {    
+    for (size_t i = 0; i < 4; i++)
+    {            
+        if (_previousRelays[i].state != _displayData.relays[i].state || refresh) {            
+            clearRow(i);
+            _lcd.setCursor(0, i);
+            _lcd.print(_displayData.relays[i].displayName);
+            _lcd.setCursor(9, i);
+            _lcd.print(": ");
+            _lcd.print(_displayData.relays[i].state == RELAY_ON ? "ON" : "OFF");
+            _previousRelays[i].state = _displayData.relays[i].state;            
+        }            
+    } 
+    resetCursor();
+}
+
+void Display::displaySettingsPage(bool refresh) {     
+    _lcd.setCursor(0, 0);
+    _lcd.print("Settings");
+    resetCursor();
+}
+
+void Display::changePage(bool next) {
+    clearScreen();
+    
+    if (next) {
+        _currentPage = static_cast<Page>((_currentPage + 1) % PAGE_COUNT);
+        Serial.println(_currentPage);
+        _currentCursorY = 0;
+    } else {
+        _currentPage = (_currentPage == HOME_PAGE) ? SETTINGS_PAGE : static_cast<Page>(_currentPage - 1);
+        Serial.println(_currentPage);
+        _currentCursorY = 3;
+    }
+    
+    switch (_currentPage) {
+        case HOME_PAGE:
+            displayHomePage(true);
+            break;
+        case RELAYS_PAGE:
+            displayRelaysPage(true);
+            break;
+        case SETTINGS_PAGE:
+            displaySettingsPage(true);
+            break;
+    }
 }
 
 void Display::clearRow(int row) {

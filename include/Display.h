@@ -36,24 +36,28 @@ private:
     hd44780_I2Cexp _lcd;
     uint8_t _currentCursorY;
     DisplayData& _displayData;
+    Page _currentPage = HOME_PAGE;    
 
     float _previousTemperature = 0;
     float _previousHumidity = 0;
     int _previousTankPercentage = 0;
     bool _previousAutomode = false;
-    Page _currentPage = HOME_PAGE;
-    
+    Relay _previousRelays[4];
+
 public:
     Display(DisplayData& displayData);
 
-    bool setup();
+    bool setup();    
     void clearRow(int row);
     void clearScreen();
     uint8_t getCurrentCursorY();
     void setCurrentCursorY(uint8_t newCursorY);
-    void displayHomePage();
+    void displayHomePage(bool refresh);
+    void displayRelaysPage(bool refresh);
+    void displaySettingsPage(bool refresh);
     void resetCursor();
     Page getCurrentPage();    
+    void changePage(bool next);
 };
 
 #endif
