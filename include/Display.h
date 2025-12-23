@@ -48,7 +48,7 @@ public:
 
     void displayAutoMode();
 
-    int getCurrentCursorY();
+    int getCursorPosition();
 
     void moveCursor(CursorMoveDirection direction);
 
@@ -64,7 +64,7 @@ private:
 
     void resetCursor();
 
-    int currentCursorY = 0;
+    int cursorPosition = 0;
 };
 
 #endif //GREENHOUSE_ESP32_DISPLAY_H

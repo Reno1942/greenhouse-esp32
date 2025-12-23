@@ -22,7 +22,16 @@ void RelayController::toggleRelay(const char* relayName) {
     for (auto& [name, relay] : relays) {
         if (strcmp(relayName, name) == 0) {
             relay.state = (relay.state == RELAY_OFF) ? RELAY_ON : RELAY_OFF;
+            digitalWrite(relay.pin, relay.state);
+            return;
+        }
+    }
+}
 
+void RelayController::setRelayState(const char* relayName, RelayState desiredState) {
+    for (auto& [name, relay] : relays) {
+        if (strcmp(relayName, name) == 0) {
+            relay.state = desiredState;
             digitalWrite(relay.pin, relay.state);
             return;
         }
@@ -31,4 +40,13 @@ void RelayController::toggleRelay(const char* relayName) {
 
 std::array<RelayEntry, 4>& RelayController::getRelays() {
     return relays;
+}
+
+RelayEntry* RelayController::getRelay(const char *relayName) {
+    for (auto& relayEntry : relays) {
+        if (strcmp(relayName, relayEntry.first) == 0) {
+            return &relayEntry;
+        }
+    }
+    return nullptr;
 }

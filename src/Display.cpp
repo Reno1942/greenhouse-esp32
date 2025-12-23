@@ -107,16 +107,15 @@ void Display::displayAutoMode() {
     }
 }
 
-int Display::getCurrentCursorY() {
-    return currentCursorY;
+int Display::getCursorPosition() {
+    return cursorPosition;
 }
 
 void Display::moveCursor(CursorMoveDirection direction) {
-    // TODO fix this pour avoir les relais placés de l'autre côté
-    if (direction == DOWN && currentCursorY < 4) {
-        currentCursorY++;
-    } else if (direction == UP && currentCursorY > 0) {
-        currentCursorY--;
+    if (direction == DOWN && cursorPosition < 4) {
+        cursorPosition++;
+    } else if (direction == UP && cursorPosition > 0) {
+        cursorPosition--;
     } else {
         return;
     }
@@ -125,9 +124,10 @@ void Display::moveCursor(CursorMoveDirection direction) {
 }
 
 void Display::resetCursor() {
-    if (currentCursorY == 0) {
-        lcd.setCursor(0, currentCursorY);
+    if (cursorPosition == 0) {
+        lcd.setCursor(0, cursorPosition);
     } else {
-        lcd.setCursor(11, currentCursorY);
+        // on retire un pour placer comme il faut dans la 2eme col
+        lcd.setCursor(10, cursorPosition - 1);
     }
 }

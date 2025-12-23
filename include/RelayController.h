@@ -20,8 +20,14 @@ public:
     RelayController();
 
     void setupRelays();
+
     void toggleRelay(const char* relayName);
+
+    void setRelayState(const char *relayName, RelayState desiredState);
+
     std::array<RelayEntry, 4>& getRelays();
+
+    RelayEntry* getRelay(const char *relayName);
 
 private:
     std::array<RelayEntry, 4> relays;
