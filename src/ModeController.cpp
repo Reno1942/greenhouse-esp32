@@ -1,7 +1,9 @@
 #include "ModeController.h"
 
-ModeController::ModeController(RelayController& _relayController) :
-    relayController(_relayController)
+ModeController::ModeController(RelayController& _relayController, SensorController& _sensorController, RTC_DS1307& _rtc) :
+    relayController(_relayController),
+    sensorController(_sensorController),
+    rtc(_rtc)
 {}
 
 AutoModeState ModeController::getAutoModeState() {
@@ -12,19 +14,54 @@ void ModeController::toggleAutoMode() {
     autoModeState == ON ? autoModeState = OFF : autoModeState = ON;
 }
 
-void ModeController::runAutoMode() {
-    // si la temp > 26, démarre le fan
-    // si la temp redescend en bas de 25, on éteint le fan
+void ModeController::setTimeTrackingMode(bool realTime) {
+    usingRealTime = realTime;
+}
 
-
-    struct tm timeinfo;
-    if (!getLocalTime(&timeinfo)) {
-        // check avec les millis
+bool ModeController::isDaytime() {
+    if (usingRealTime) {
+        int currentHour = rtc.now().hour();
+        return (currentHour >= sunriseHour && currentHour <= sunsetHour);
     }
 
-    int currentHour = timeinfo.tm_hour;
-    if (currentHour >= sunriseHour && currentHour < sunsetHour) {
+    unsigned long cyclePosition = millis() % fullCycle;
+    return cyclePosition < lightOnDuration;
+}
+
+void ModeController::runOverflowProtection(unsigned long currentTime) {
+    if (sensorController.waterLevelGutterReached() || !sensorController.waterLevelTankReached()) {
+        if (!pumpTimedOut) {
+            pumpOffTime = currentTime;
+            pumpTimedOut = true;
+        }
+        relayController.setRelayState("Pump", RELAY_OFF);
+    }
+
+    if (pumpTimedOut && (currentTime - pumpOffTime >= pumpTimeoutMs)) {
+        pumpTimedOut = false;
+    }
+}
+
+void ModeController::runAutoMode() {
+    if (pumpTimedOut) { return; }
+    float currentHumidity = sensorController.readHumidity();
+
+    if (currentHumidity > humidityUpperBound) {
+        relayController.setRelayState("Fan", RELAY_ON);
+    }
+    if (currentHumidity < humidityLowerBound) {
+        relayController.setRelayState("Fan", RELAY_OFF);
+    }
+
+    if (isDaytime()) {
         relayController.setRelayState("TopL", RELAY_ON);
         relayController.setRelayState("BtmL", RELAY_ON);
+    } else {
+        relayController.setRelayState("TopL", RELAY_OFF);
+        relayController.setRelayState("BtmL", RELAY_OFF);
+    }
+
+    if (!sensorController.waterLevelGutterReached() && sensorController.waterLevelTankReached()) {
+        relayController.setRelayState("Pump", RELAY_ON);
     }
 }
