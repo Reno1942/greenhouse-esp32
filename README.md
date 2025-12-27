@@ -10,18 +10,17 @@
 
 ### Default Connections
 
-| GPIO Pin | Connection |
-|----------|------------|
-| 2 | Fan Relay |
-| 3 | Pump Relay |
-| 4 | VRx (Joystick) |
-| 5 | VRy (Joystick) |
-| 6 | SDA (LCD) |
-| 7 | SCL (LCD) |
-| 9 | DHT-11 |
-| 10 | Top Light Relay |
-| 11 | Bottom Light Relay |
-| 18 | Echo (HC-SR04) |
-| 19 | Trig (HC-SR04) |
-| 20 | Water Level Sensor |
-| 23 | SW (Joystick) |
+| GPIO Pin | Connection           |
+|----------|----------------------|
+| 21       | Top Light Relay      |
+| 20       | Bottom Light Relay   |
+| 23       | Fan Relay            |
+| 22       | Pump Relay           |
+| 4        | VRx (Joystick)       |
+| 5        | VRy (Joystick)       |
+| 3        | SW (Joystick)        |
+| 10       | SDA (LCD & RTC)      |
+| 11       | SCL (LCD & RTC)      |
+| 0        | DHT-11               |
+| 1        | Water Level (Gutter) |
+| 7        | Water Level (Tank)   |
