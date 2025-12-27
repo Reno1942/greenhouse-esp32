@@ -64,9 +64,10 @@ void Display::displaySensors() {
     if (currentTemperature != displayData.displayedTemperature) {
         displayData.displayedTemperature = currentTemperature;
         lcd.setCursor(0, 1);
-        lcd.print("Temp:");
-        lcd.print(sensorController.readTemperature(), 0); // formatter pour 2 chiffres
-        lcd.print(" C");
+        lcd.print("Tem:");
+        lcd.print(sensorController.readTemperature());
+        lcd.setCursor(8, 1);
+        lcd.print("C");
         resetCursor();
     }
 
@@ -74,21 +75,23 @@ void Display::displaySensors() {
     if (currentHumidity != displayData.displayedHumidity) {
         displayData.displayedHumidity = currentHumidity;
         lcd.setCursor(0, 2);
-        lcd.print("Hum :");
-        lcd.print(sensorController.readHumidity(), 0); // formatter pour 2 chiffres
-        lcd.print(" %");
-        resetCursor();
-    }
-
-    int currentTankPercentage = sensorController.readTankPercentage();
-    if (currentTankPercentage != displayData.displayedTankPercentage) {
-        displayData.displayedTankPercentage = currentTankPercentage;
-        lcd.setCursor(0, 3);
-        lcd.print("Tank:");
-        lcd.print(sensorController.readTankPercentage());
+        lcd.print("Hum:");
+        lcd.print(sensorController.readHumidity());
+        lcd.setCursor(8, 2);
         lcd.print("%");
         resetCursor();
     }
+
+    // int currentTankPercentage = sensorController.readTankPercentage();
+    // if (currentTankPercentage != displayData.displayedTankPercentage) {
+    //     displayData.displayedTankPercentage = currentTankPercentage;
+    //     lcd.setCursor(0, 3);
+    //     lcd.print("Tank:");
+    //     lcd.print(sensorController.readTankPercentage());
+    //     lcd.setCursor(8, 3);
+    //     lcd.print("%");
+    //     resetCursor();
+    // }
 }
 
 void Display::displayAutoMode() {

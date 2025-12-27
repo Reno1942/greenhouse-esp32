@@ -6,7 +6,8 @@
 #include <Ultrasonic.h>
 
 struct SensorsPins {
-    uint8_t waterLevel;
+    uint8_t waterLevelGutter;
+    uint8_t waterLevelTank;
     uint8_t ultrasonicTrig;
     uint8_t ultrasonicEcho;
     uint8_t dht;
@@ -19,13 +20,15 @@ public:
     void setupDHT();
     float readTemperature();
     float readHumidity();
-    int readTankPercentage();
-    bool wlSensorReached();
+    //int readTankPercentage();
+    bool waterLevelGutterReached();
+
+    bool waterLevelTankReached();
 
 private:
     SensorsPins sensorsPins;
     DHT_Unified dht;
-    Ultrasonic ultrasonic;
+    //Ultrasonic ultrasonic;
 
     const int minWaterDistance = 5;
     const int maxWaterDistance = 30;

@@ -4,9 +4,15 @@ bool WiFiController::getUsingRealTime() {
     return usingRealTime;
 }
 
-WiFiController::WiFiController() {}
+WiFiController::WiFiController() {
+}
 
 void WiFiController::setup() {
+    // TODO FIX THIS, TOUT CASSÉ FAIT TOUJOURS RESET LE ESP32
+    WiFi.mode(WIFI_MODE_STA);
+    WiFi.disconnect(true);
+    delay(100);
+
     Serial.print("Connecting to WiFi");
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
@@ -22,7 +28,7 @@ void WiFiController::setup() {
         Serial.println("\nWiFi connected");
         setupTime();
     } else {
-        Serial.println("WiFi not connected, using millis for time tracking");
+        Serial.println("WiFi not connected");
         usingRealTime = false;
     }
 }
@@ -46,8 +52,10 @@ void WiFiController::setupTime() {
         usingRealTime = false;
     }
 
-    delay(100);
+    delay(500);
     WiFi.disconnect(true);
+    delay(500);
     WiFi.mode(WIFI_OFF);
+    delay(500);
     Serial.println("WiFi disconnected");
 }

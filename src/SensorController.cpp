@@ -2,13 +2,14 @@
 
 SensorController::SensorController() :
     sensorsPins{
-        .waterLevel = 1,
+        .waterLevelGutter = 1,
+        .waterLevelTank = 7,
         .ultrasonicTrig = 12,
         .ultrasonicEcho = 13,
         .dht = 0
     },
-    dht(sensorsPins.dht, 11),
-    ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho)
+    dht(sensorsPins.dht, 11)
+    //ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho)
 {}
 
 void SensorController::setupDHT() {
@@ -16,7 +17,7 @@ void SensorController::setupDHT() {
 }
 
 void SensorController::setupWaterLevel() {
-    pinMode(sensorsPins.waterLevel, INPUT_PULLUP);
+    pinMode(sensorsPins.waterLevelGutter, INPUT_PULLUP);
 }
 
 float SensorController::readTemperature() {
@@ -29,19 +30,24 @@ float SensorController::readHumidity() {
     return humidityEvent.relative_humidity;
 }
 
-int SensorController::readTankPercentage() {
-    int distanceCM = ultrasonic.read();
 
-    if (distanceCM <= minWaterDistance) {
-        tankLevelPercentage = 100;
-    }
-    else if (distanceCM <= maxWaterDistance) {
-        tankLevelPercentage = ((maxWaterDistance - distanceCM) / static_cast<float>(maxWaterDistance - minWaterDistance)) * 100;
-    }
+// int SensorController::readTankPercentage() {
+//     int distanceCM = ultrasonic.read();
+//
+//     if (distanceCM <= minWaterDistance) {
+//         tankLevelPercentage = 100;
+//     }
+//     else if (distanceCM <= maxWaterDistance) {
+//         tankLevelPercentage = ((maxWaterDistance - distanceCM) / static_cast<float>(maxWaterDistance - minWaterDistance)) * 100;
+//     }
+//
+//     return tankLevelPercentage;
+// }
 
-    return tankLevelPercentage;
+bool SensorController::waterLevelGutterReached() {
+    return digitalRead(sensorsPins.waterLevelGutter) == 1;
 }
 
-bool SensorController::wlSensorReached() {
-    return digitalRead(sensorsPins.waterLevel) == HIGH;
+bool SensorController::waterLevelTankReached() {
+    return digitalRead(sensorsPins.waterLevelTank) == 1;
 }

@@ -30,7 +30,7 @@ void RelayController::toggleRelay(const char* relayName) {
 
 void RelayController::setRelayState(const char* relayName, RelayState desiredState) {
     for (auto& [name, relay] : relays) {
-        if (strcmp(relayName, name) == 0) {
+        if (strcmp(relayName, name) == 0 && relay.state != desiredState) {
             relay.state = desiredState;
             digitalWrite(relay.pin, relay.state);
             return;

@@ -6,7 +6,7 @@
 
 ### DevKit Pinout
 
-![ESP32-C6-DevKitC-1 Pinout](https://docs.espressif.com/projects/esp-dev-kits/en/latest/_images/esp32-c6-devkitc-1-pin-layout.png)
+![ESP32-C6-DevKitC-1 Pinout](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/_images/esp32-c6-devkitc-1-pin-layout.png)
 
 ### Default Connections
 
