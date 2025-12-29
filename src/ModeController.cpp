@@ -1,10 +1,10 @@
 #include "ModeController.h"
 
-ModeController::ModeController(RelayController& _relayController, SensorController& _sensorController, RTC_DS1307& _rtc) :
-    relayController(_relayController),
-    sensorController(_sensorController),
-    rtc(_rtc)
-{}
+ModeController::ModeController(RelayController &_relayController, SensorController &_sensorController,
+                               RTC_DS1307 &_rtc) : relayController(_relayController),
+                                                   sensorController(_sensorController),
+                                                   rtc(_rtc) {
+}
 
 AutoModeState ModeController::getAutoModeState() {
     return autoModeState;
@@ -29,8 +29,16 @@ bool ModeController::isDaytime() {
 }
 
 void ModeController::runOverflowProtection(unsigned long currentTime) {
-    if (sensorController.waterLevelGutterReached() || !sensorController.waterLevelTankReached()) {
+    if (!sensorController.waterLevelTankReached()) {
+        Serial.println("Water level tank reached");
+        relayController.setRelayState("Pump", RELAY_OFF);
+        return;
+    }
+
+    if (sensorController.waterLevelGutterReached()) {
+        //Serial.println("Water level gutter reached");
         if (!pumpTimedOut) {
+            Serial.println("Pump timeout starting");
             pumpOffTime = currentTime;
             pumpTimedOut = true;
         }
@@ -38,6 +46,7 @@ void ModeController::runOverflowProtection(unsigned long currentTime) {
     }
 
     if (pumpTimedOut && (currentTime - pumpOffTime >= pumpTimeoutMs)) {
+        Serial.println("Pump timeout over");
         pumpTimedOut = false;
     }
 }

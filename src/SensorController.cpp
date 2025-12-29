@@ -2,11 +2,11 @@
 
 SensorController::SensorController() :
     sensorsPins{
-        .waterLevelGutter = 1,
-        .waterLevelTank = 7,
+        .waterLevelGutter = 0,
+        .waterLevelTank = 1,
         .ultrasonicTrig = 12,
         .ultrasonicEcho = 13,
-        .dht = 0
+        .dht = 7
     },
     dht(sensorsPins.dht, 11)
     //ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho)
@@ -18,6 +18,7 @@ void SensorController::setupDHT() {
 
 void SensorController::setupWaterLevel() {
     pinMode(sensorsPins.waterLevelGutter, INPUT_PULLUP);
+    pinMode(sensorsPins.waterLevelTank, INPUT_PULLUP);
 }
 
 float SensorController::readTemperature() {

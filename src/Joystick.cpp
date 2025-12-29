@@ -5,7 +5,7 @@ Joystick::Joystick(Display& _display, RelayController& _relayController, ModeCon
     joystickPins{
         .vrX = 4,
         .vrY = 5,
-        .sw = 3
+        .sw = 6
     },
     display(_display),
     relayController(_relayController),

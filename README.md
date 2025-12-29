@@ -18,9 +18,9 @@
 | 22       | Pump Relay           |
 | 4        | VRx (Joystick)       |
 | 5        | VRy (Joystick)       |
-| 3        | SW (Joystick)        |
+| 6        | SW (Joystick)        |
 | 10       | SDA (LCD & RTC)      |
 | 11       | SCL (LCD & RTC)      |
-| 0        | DHT-11               |
-| 1        | Water Level (Gutter) |
-| 7        | Water Level (Tank)   |
+| 7        | DHT-11               |
+| 0        | Water Level (Gutter) |
+| 1        | Water Level (Tank)   |
