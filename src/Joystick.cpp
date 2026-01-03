@@ -1,5 +1,9 @@
 #include "Display.h"
 #include "Joystick.h"
+//TEST DEBUG
+int VRX = 4;
+int VRY = 5;
+int SW = 6;
 
 Joystick::Joystick(Display& _display, RelayController& _relayController, ModeController& _modeController) :
     joystickPins{
@@ -17,6 +21,10 @@ void Joystick::setup() {
     pinMode(joystickPins.sw, INPUT_PULLUP);
     pinMode(joystickPins.vrX, INPUT);
     pinMode(joystickPins.vrY, INPUT);
+    //TEST DEBUG
+    pinMode(VRX, INPUT);
+    pinMode(VRY, INPUT);
+    pinMode(SW, INPUT_PULLUP);
 }
 
 void Joystick::handleJoystickMovement(unsigned long currentTime) {
@@ -36,12 +44,18 @@ void Joystick::handleJoystickMovement(unsigned long currentTime) {
 
 void Joystick::handleJoystickClick(unsigned long currentTime) {
     const int debounceDelayMs = 200;
+    //TEST DEBUG
+    Serial.println(digitalRead(SW));
+    //Serial.println(digitalRead(joystickPins.sw));
+    //Serial.println(digitalRead(joystickPins.vrX));
+    //Serial.println(digitalRead(joystickPins.vrY)); caca = 0
 
     if (digitalRead(joystickPins.sw) == LOW) {
         if (currentTime - lastClickTime < debounceDelayMs) { return; }
         lastClickTime = currentTime;
         uint8_t cursorPosition = display.getCursorPosition();
         AutoModeState autoModeState = modeController.getAutoModeState();
+
 
         switch (cursorPosition) {
             case 0:
