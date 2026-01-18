@@ -52,7 +52,7 @@ void loop() {
     display.displaySensors();
     display.displayAutoMode();
 
-    //modeController.runOverflowProtection(currentTime);
+    modeController.runOverflowProtection(currentTime);
 
     if (modeController.getAutoModeState() == ON) {
         modeController.runAutoMode();

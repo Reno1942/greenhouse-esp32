@@ -8,8 +8,6 @@
 struct SensorsPins {
     uint8_t waterLevelGutter;
     uint8_t waterLevelTank;
-    uint8_t ultrasonicTrig;
-    uint8_t ultrasonicEcho;
     uint8_t dht;
 };
 
@@ -20,7 +18,6 @@ public:
     void setupDHT();
     float readTemperature();
     float readHumidity();
-    //int readTankPercentage();
     bool waterLevelGutterReached();
 
     bool waterLevelTankReached();
@@ -28,7 +25,6 @@ public:
 private:
     SensorsPins sensorsPins;
     DHT_Unified dht;
-    //Ultrasonic ultrasonic;
 
     const int minWaterDistance = 5;
     const int maxWaterDistance = 30;

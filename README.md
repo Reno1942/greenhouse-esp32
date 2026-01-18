@@ -6,21 +6,21 @@
 
 ### DevKit Pinout
 
-![ESP32-C6-DevKitC-1 Pinout](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/_images/esp32-c6-devkitc-1-pin-layout.png)
+![ESP32S3_Lite_Pinout.png](ESP32S3_Lite_Pinout.png)
 
 ### Default Connections
 
 | GPIO Pin | Connection           |
 |----------|----------------------|
-| 21       | Top Light Relay      |
+| 19       | Top Light Relay      |
 | 20       | Bottom Light Relay   |
-| 23       | Fan Relay            |
-| 22       | Pump Relay           |
-| 4        | VRx (Joystick)       |
-| 5        | VRy (Joystick)       |
-| 6        | SW (Joystick)        |
-| 10       | SDA (LCD & RTC)      |
-| 11       | SCL (LCD & RTC)      |
-| 7        | DHT-11               |
-| 0        | Water Level (Gutter) |
-| 1        | Water Level (Tank)   |
+| 21       | Fan Relay            |
+| 47       | Pump Relay           |
+| 12       | VRx (Joystick)       |
+| 13       | VRy (Joystick)       |
+| 14       | SW (Joystick)        |
+| 35       | SDA (LCD & RTC)      |
+| 36       | SCL (LCD & RTC)      |
+| 4        | DHT-11               |
+| 5        | Water Level (Gutter) |
+| 6        | Water Level (Tank)   |
