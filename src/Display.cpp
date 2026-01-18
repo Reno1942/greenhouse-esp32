@@ -3,7 +3,7 @@
 Display::Display(RelayController& _relayController, ModeController& _modeController, SensorController& _sensorController) :
     displayData{},
     lcdValues{.address = 0x27, .cols = 20, .rows = 4},
-    lcdPins{.sda = 35, .scl = 36},
+    lcdPins{.sda = 1, .scl = 2},
     relayController(_relayController),
     modeController(_modeController),
     sensorController(_sensorController)

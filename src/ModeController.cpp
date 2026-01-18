@@ -30,13 +30,11 @@ bool ModeController::isDaytime() {
 
 void ModeController::runOverflowProtection(unsigned long currentTime) {
     if (!sensorController.waterLevelTankReached()) {
-        Serial.println("Water level tank reached");
         relayController.setRelayState("Pump", RELAY_OFF);
         return;
     }
 
     if (sensorController.waterLevelGutterReached()) {
-        //Serial.println("Water level gutter reached");
         if (!pumpTimedOut) {
             Serial.println("Pump timeout starting");
             pumpOffTime = currentTime;

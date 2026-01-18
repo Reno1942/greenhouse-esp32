@@ -19,8 +19,8 @@
 | 12       | VRx (Joystick)       |
 | 13       | VRy (Joystick)       |
 | 14       | SW (Joystick)        |
-| 35       | SDA (LCD & RTC)      |
-| 36       | SCL (LCD & RTC)      |
+| 1        | SDA (LCD & RTC)      |
+| 2        | SCL (LCD & RTC)      |
 | 4        | DHT-11               |
 | 5        | Water Level (Gutter) |
 | 6        | Water Level (Tank)   |
