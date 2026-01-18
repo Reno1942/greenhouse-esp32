@@ -24,6 +24,7 @@ void setup() {
     display.setup();
     relayController.setupRelays();
     sensorController.setupDHT();
+    joystick.setup();
     sensorController.setupWaterLevel();
 
     if (!rtc.begin()) {
@@ -52,7 +53,9 @@ void loop() {
     display.displaySensors();
     display.displayAutoMode();
 
-    //modeController.runOverflowProtection(currentTime);
+    //Serial.println(digitalRead(6));
+
+    modeController.runOverflowProtection(currentTime);
 
     if (modeController.getAutoModeState() == ON) {
         modeController.runAutoMode();

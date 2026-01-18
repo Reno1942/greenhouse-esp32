@@ -7,9 +7,9 @@ int SW = 6;
 
 Joystick::Joystick(Display& _display, RelayController& _relayController, ModeController& _modeController) :
     joystickPins{
-        .vrX = 4,
-        .vrY = 5,
-        .sw = 6
+        .vrX = 12,
+        .vrY = 13,
+        .sw = 14
     },
     display(_display),
     relayController(_relayController),
