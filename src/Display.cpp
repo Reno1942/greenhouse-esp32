@@ -81,17 +81,6 @@ void Display::displaySensors() {
         lcd.print("%");
         resetCursor();
     }
-
-    // int currentTankPercentage = sensorController.readTankPercentage();
-    // if (currentTankPercentage != displayData.displayedTankPercentage) {
-    //     displayData.displayedTankPercentage = currentTankPercentage;
-    //     lcd.setCursor(0, 3);
-    //     lcd.print("Tank:");
-    //     lcd.print(sensorController.readTankPercentage());
-    //     lcd.setCursor(8, 3);
-    //     lcd.print("%");
-    //     resetCursor();
-    // }
 }
 
 void Display::displayAutoMode() {
@@ -130,7 +119,6 @@ void Display::resetCursor() {
     if (cursorPosition == 0) {
         lcd.setCursor(0, cursorPosition);
     } else {
-        // on retire un pour placer comme il faut dans la 2eme col
         lcd.setCursor(10, cursorPosition - 1);
     }
 }

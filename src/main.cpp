@@ -53,8 +53,6 @@ void loop() {
     display.displaySensors();
     display.displayAutoMode();
 
-    //Serial.println(digitalRead(6));
-
     modeController.runOverflowProtection(currentTime);
 
     if (modeController.getAutoModeState() == ON) {
