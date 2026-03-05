@@ -1,12 +1,13 @@
 #include <Display.h>
 
-Display::Display(RelayController& _relayController, ModeController& _modeController, SensorController& _sensorController) :
+Display::Display(RelayController& _relayController, ModeController& _modeController, SensorController& _sensorController, RTC_DS1307& _rtc) :
     displayData{},
     lcdValues{.address = 0x27, .cols = 20, .rows = 4},
     lcdPins{.sda = 1, .scl = 2},
     relayController(_relayController),
     modeController(_modeController),
-    sensorController(_sensorController)
+    sensorController(_sensorController),
+    rtc(_rtc)
 {
 }
 
@@ -97,6 +98,13 @@ void Display::displayAutoMode() {
         }
         resetCursor();
     }
+}
+
+void Display::displayDateTime() {
+    lcd.setCursor(0, 3);
+    lcd.print(rtc.now().timestamp(DateTime::TIMESTAMP_TIME));
+
+    resetCursor();
 }
 
 int Display::getCursorPosition() {

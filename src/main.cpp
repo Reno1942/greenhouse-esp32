@@ -9,7 +9,7 @@ RTC_DS1307 rtc;
 RelayController relayController = RelayController();
 SensorController sensorController = SensorController();
 ModeController modeController = ModeController(relayController, sensorController, rtc);
-Display display = Display(relayController, modeController, sensorController);
+Display display = Display(relayController, modeController, sensorController, rtc);
 Joystick joystick = Joystick(display, relayController, modeController);
 
 unsigned long currentTime = 0;
@@ -52,6 +52,7 @@ void loop() {
     display.displayRelays();
     display.displaySensors();
     display.displayAutoMode();
+    display.displayDateTime();
 
     modeController.runOverflowProtection(currentTime);
 

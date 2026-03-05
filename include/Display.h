@@ -38,7 +38,7 @@ enum CursorMoveDirection {
 
 class Display {
 public:
-    Display(RelayController &_relayController, ModeController &_modeController, SensorController &_sensorController);
+    Display(RelayController &_relayController, ModeController &_modeController, SensorController &_sensorController, RTC_DS1307 &_rtc);
 
     bool setup();
 
@@ -47,6 +47,8 @@ public:
     void displaySensors();
 
     void displayAutoMode();
+
+    void displayDateTime();
 
     int getCursorPosition();
 
@@ -61,6 +63,7 @@ private:
     RelayController &relayController;
     SensorController &sensorController;
     ModeController &modeController;
+    RTC_DS1307 &rtc;
 
     void resetCursor();
 
