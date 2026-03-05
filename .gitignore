@@ -1,4 +1,5 @@
 .pio
 .vscode
+.idea
 ~$DisplayTable.xlsx
 /include/Credentials.h

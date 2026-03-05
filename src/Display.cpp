@@ -1,12 +1,13 @@
 #include <Display.h>
 
-Display::Display(RelayController& _relayController, ModeController& _modeController, SensorController& _sensorController) :
+Display::Display(RelayController& _relayController, ModeController& _modeController, SensorController& _sensorController, RTC_DS1307& _rtc) :
     displayData{},
     lcdValues{.address = 0x27, .cols = 20, .rows = 4},
     lcdPins{.sda = 1, .scl = 2},
     relayController(_relayController),
     modeController(_modeController),
-    sensorController(_sensorController)
+    sensorController(_sensorController),
+    rtc(_rtc)
 {
 }
 
@@ -81,17 +82,6 @@ void Display::displaySensors() {
         lcd.print("%");
         resetCursor();
     }
-
-    // int currentTankPercentage = sensorController.readTankPercentage();
-    // if (currentTankPercentage != displayData.displayedTankPercentage) {
-    //     displayData.displayedTankPercentage = currentTankPercentage;
-    //     lcd.setCursor(0, 3);
-    //     lcd.print("Tank:");
-    //     lcd.print(sensorController.readTankPercentage());
-    //     lcd.setCursor(8, 3);
-    //     lcd.print("%");
-    //     resetCursor();
-    // }
 }
 
 void Display::displayAutoMode() {
@@ -108,6 +98,13 @@ void Display::displayAutoMode() {
         }
         resetCursor();
     }
+}
+
+void Display::displayDateTime() {
+    lcd.setCursor(0, 3);
+    lcd.print(rtc.now().timestamp(DateTime::TIMESTAMP_TIME));
+
+    resetCursor();
 }
 
 int Display::getCursorPosition() {
@@ -130,7 +127,6 @@ void Display::resetCursor() {
     if (cursorPosition == 0) {
         lcd.setCursor(0, cursorPosition);
     } else {
-        // on retire un pour placer comme il faut dans la 2eme col
         lcd.setCursor(10, cursorPosition - 1);
     }
 }
