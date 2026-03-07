@@ -101,8 +101,24 @@ void Display::displayAutoMode() {
 }
 
 void Display::displayDateTime() {
-    lcd.setCursor(0, 3);
-    lcd.print(rtc.now().timestamp(DateTime::TIMESTAMP_TIME));
+    uint8_t currentMinute = rtc.now().minute();
+    uint8_t currentHour = rtc.now().hour();
+
+    if (currentMinute != displayData.displayedMinute) {
+        displayData.displayedMinute = currentMinute;
+
+        lcd.setCursor(0, 3);
+
+        if (currentHour < 10) {
+            lcd.print("0");
+        }
+        lcd.print(currentHour);
+        lcd.print(":");
+        if (currentMinute < 10) {
+            lcd.print("0");
+        }
+        lcd.print(currentMinute);
+    }
 
     resetCursor();
 }

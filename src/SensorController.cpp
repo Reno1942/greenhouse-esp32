@@ -2,9 +2,9 @@
 
 SensorController::SensorController() :
     sensorsPins{
-        .waterLevelGutter = 5,
-        .waterLevelTank = 6,
-        .dht = 4
+        .waterLevelGutter = 39,
+        .waterLevelTank = 38,
+        .dht = 40
     },
     dht(sensorsPins.dht, 11)
     //ultrasonic(sensorsPins.ultrasonicTrig, sensorsPins.ultrasonicEcho)

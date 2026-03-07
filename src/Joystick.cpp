@@ -3,9 +3,9 @@
 
 Joystick::Joystick(Display& _display, RelayController& _relayController, ModeController& _modeController) :
     joystickPins{
-        .vrX = 12,
-        .vrY = 13,
-        .sw = 14
+        .vrX = 19,
+        .vrY = 20,
+        .sw = 21
     },
     display(_display),
     relayController(_relayController),

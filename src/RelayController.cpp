@@ -2,10 +2,10 @@
 
 RelayController::RelayController() : relays{
     {
-        {"TopL", {19, RELAY_OFF}},
-        {"BtmL", {20, RELAY_OFF}},
-        {"Fan", {21, RELAY_OFF}},
-        {"Pump", {47, RELAY_OFF}},
+        {"TopL", {4, RELAY_OFF}},
+        {"BtmL", {5, RELAY_OFF}},
+        {"Fan", {6, RELAY_OFF}},
+        {"Pump", {7, RELAY_OFF}},
     }
 } {
 }

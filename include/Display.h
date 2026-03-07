@@ -27,6 +27,7 @@ struct DisplayData {
     float displayedHumidity;
     int displayedTankPercentage;
     AutoModeState displayedAutoModeState;
+    uint8_t displayedMinute;
 
     std::map<std::string, RelayState> displayedRelayStates;
 };
