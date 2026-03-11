@@ -18,6 +18,10 @@ void ModeController::setTimeTrackingMode(bool realTime) {
     usingRealTime = realTime;
 }
 
+bool ModeController::getTimeTrackingMode() {
+    return usingRealTime;
+}
+
 bool ModeController::isDaytime() {
     if (usingRealTime) {
         int currentHour = rtc.now().hour();

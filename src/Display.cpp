@@ -118,8 +118,12 @@ void Display::displayDateTime() {
             lcd.print("0");
         }
         lcd.print(currentMinute);
-        lcd.print(" "); //Effacer chiffre random sur l'heure (Ex: 14h359)
+        lcd.print(" ");
+    }
 
+    if (!modeController.getTimeTrackingMode()) {
+        lcd.setCursor(5, 3);
+        lcd.print("M");
     }
 
     resetCursor();

@@ -22,6 +22,8 @@ public:
 
     void setTimeTrackingMode(bool realTime);
 
+    bool getTimeTrackingMode();
+
     bool isDaytime();
 
     void runOverflowProtection(unsigned long currentTime);
