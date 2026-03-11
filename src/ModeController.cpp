@@ -54,7 +54,7 @@ void ModeController::runOverflowProtection(unsigned long currentTime) {
 }
 
 void ModeController::runAutoMode() {
-    if (pumpTimedOut) { return; }
+
     float currentHumidity = sensorController.readHumidity();
 
     if (currentHumidity > humidityUpperBound) {
@@ -71,7 +71,7 @@ void ModeController::runAutoMode() {
         relayController.setRelayState("TopL", RELAY_OFF);
         relayController.setRelayState("BtmL", RELAY_OFF);
     }
-
+    if (pumpTimedOut) { return; }
     if (!sensorController.waterLevelGutterReached() && sensorController.waterLevelTankReached()) {
         relayController.setRelayState("Pump", RELAY_ON);
     }

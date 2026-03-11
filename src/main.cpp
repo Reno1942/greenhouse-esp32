@@ -57,7 +57,7 @@ void loop() {
     display.displayAutoMode();
     display.displayDateTime();
 
-    //modeController.runOverflowProtection(currentTime);
+    modeController.runOverflowProtection(currentTime);
 
     if (modeController.getAutoModeState() == ON) {
         modeController.runAutoMode();

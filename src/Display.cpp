@@ -122,8 +122,11 @@ void Display::displayDateTime() {
     }
 
     if (!modeController.getTimeTrackingMode()) {
-        lcd.setCursor(5, 3);
+        lcd.setCursor(6, 3);
         lcd.print("M");
+    } else {
+        lcd.setCursor(6, 3);
+        lcd.print("R");
     }
 
     resetCursor();
