@@ -32,6 +32,9 @@ void setup() {
         modeController.setTimeTrackingMode(false);
     }
 
+    //Heure manuelle
+    //rtc.adjust(DateTime(2026, 3, 10, 23, 2, 0));
+
     if (!rtc.isrunning()) {
         Serial.println("RTC is not running, setting time");
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
