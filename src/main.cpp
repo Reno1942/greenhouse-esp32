@@ -33,7 +33,7 @@ void setup() {
     }
 
     //Heure manuelle
-    //rtc.adjust(DateTime(2026, 3, 11, 20, 12, 0));
+    //rtc.adjust(DateTime(2026, 3, 11, 20, 48, 0));
 
     if (!rtc.isrunning()) {
         Serial.println("RTC is not running, setting time");
