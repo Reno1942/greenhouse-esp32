@@ -36,8 +36,8 @@ private:
     RTC_DS1307 &rtc;
 
     AutoModeState autoModeState = ON;
-    uint8_t sunriseHour = 0;
-    uint8_t sunsetHour = 18;
+    uint8_t sunriseHour = 18;
+    uint8_t sunsetHour = 12;
     bool usingRealTime = true;
     const unsigned long lightOnDuration = 18UL * 60UL * 60UL * 1000UL;
     const unsigned long fullCycle = 24UL * 60UL * 60UL * 1000UL;

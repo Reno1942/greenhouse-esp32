@@ -22,12 +22,18 @@ bool ModeController::getTimeTrackingMode() {
     return usingRealTime;
 }
 
+
 bool ModeController::isDaytime() {
     if (usingRealTime) {
         int currentHour = rtc.now().hour();
-        return (currentHour >= sunriseHour && currentHour <= sunsetHour);
-    }
 
+        if (sunriseHour < sunsetHour) {
+            return (currentHour >= sunriseHour && currentHour < sunsetHour);
+        }
+        {
+            return (currentHour >= sunriseHour || currentHour < sunsetHour );
+        }
+    }
     unsigned long cyclePosition = millis() % fullCycle;
     return cyclePosition < lightOnDuration;
 }

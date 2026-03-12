@@ -33,7 +33,7 @@ void setup() {
     }
 
     //Heure manuelle
-    //rtc.adjust(DateTime(2026, 3, 10, 23, 2, 0));
+    //rtc.adjust(DateTime(2026, 3, 11, 20, 12, 0));
 
     if (!rtc.isrunning()) {
         Serial.println("RTC is not running, setting time");
@@ -56,6 +56,9 @@ void loop() {
     display.displaySensors();
     display.displayAutoMode();
     display.displayDateTime();
+
+    //TEST RTC HEURE
+    //Serial.println(rtc.now().hour());
 
     modeController.runOverflowProtection(currentTime);
 
