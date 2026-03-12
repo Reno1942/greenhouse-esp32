@@ -24,18 +24,18 @@ bool ModeController::getTimeTrackingMode() {
 
 
 bool ModeController::isDaytime() {
-    if (usingRealTime) {
-        int currentHour = rtc.now().hour();
-
-        if (sunriseHour < sunsetHour) {
-            return (currentHour >= sunriseHour && currentHour < sunsetHour);
-        }
-        {
-            return (currentHour >= sunriseHour || currentHour < sunsetHour );
-        }
+    if (!usingRealTime) {
+        unsigned long cyclePosition = millis() % fullCycle;
+        return cyclePosition < lightOnDuration;
     }
-    unsigned long cyclePosition = millis() % fullCycle;
-    return cyclePosition < lightOnDuration;
+
+    int currentHour = rtc.now().hour();
+
+    if (sunriseHour < sunsetHour) {
+        return (currentHour >= sunriseHour && currentHour < sunsetHour);
+    }
+
+    return (currentHour >= sunriseHour || currentHour < sunsetHour );
 }
 
 void ModeController::runOverflowProtection(unsigned long currentTime) {
