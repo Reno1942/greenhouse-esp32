@@ -55,6 +55,8 @@ public:
 
     void moveCursor(CursorMoveDirection direction);
 
+    void watchSleepMode();
+
 private:
     DisplayData displayData;
     LCDValues lcdValues;
@@ -66,9 +68,14 @@ private:
     ModeController &modeController;
     RTC_DS1307 &rtc;
 
+    void wakeDisplay();
+
     void resetCursor();
 
     int cursorPosition = 0;
+    unsigned long lastCursorMoveTime = 0;
+    const unsigned long displaySleepTime = 300000;
+    bool displaySleeping = false;
 };
 
 #endif //GREENHOUSE_ESP32_DISPLAY_H

@@ -56,9 +56,7 @@ void loop() {
     display.displaySensors();
     display.displayAutoMode();
     display.displayDateTime();
-
-    //TEST RTC HEURE
-    //Serial.println(rtc.now().hour());
+    display.watchSleepMode();
 
     modeController.runOverflowProtection(currentTime);
 

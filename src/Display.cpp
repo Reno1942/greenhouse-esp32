@@ -137,6 +137,8 @@ int Display::getCursorPosition() {
 }
 
 void Display::moveCursor(CursorMoveDirection direction) {
+    lastCursorMoveTime = millis();
+    wakeDisplay();
     if (direction == DOWN && cursorPosition < 4) {
         cursorPosition++;
     } else if (direction == UP && cursorPosition > 0) {
@@ -146,6 +148,20 @@ void Display::moveCursor(CursorMoveDirection direction) {
     }
 
     resetCursor();
+}
+
+void Display::watchSleepMode() {
+    if (lastCursorMoveTime > displaySleepTime && !displaySleeping) {
+        displaySleeping = true;
+        lcd.noBacklight();
+    }
+}
+
+void Display::wakeDisplay() {
+    if (displaySleeping) {
+        displaySleeping = false;
+        lcd.backlight();
+    }
 }
 
 void Display::resetCursor() {
