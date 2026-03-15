@@ -151,7 +151,7 @@ void Display::moveCursor(CursorMoveDirection direction) {
 }
 
 void Display::watchSleepMode() {
-    if (lastCursorMoveTime > displaySleepTime && !displaySleeping) {
+    if (millis() - lastCursorMoveTime > displaySleepTime && !displaySleeping) {
         displaySleeping = true;
         lcd.noBacklight();
     }
